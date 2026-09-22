@@ -6,15 +6,21 @@
 
   if (!cfg || !CC) return;
 
+
+  // ==========================================================
+  // ORESTBIDA CSS
+  // ==========================================================
+
   const CSS =
     'https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@3.1.0/dist/cookieconsent.css';
 
 
-  // =========================================================
+  // ==========================================================
   // TRADUCCIONES
-  // =========================================================
+  // ==========================================================
 
   const i18n = {
+
     es: {
       title: 'Utilizamos cookies',
       description:
@@ -37,9 +43,7 @@
         'Nos ayudan a comprender el uso del sitio web y medir su rendimiento.',
       advertising: 'Publicidad',
       advertisingDesc:
-        'Permiten medir campañas y ofrecer publicidad más relevante.',
-      policy: 'Política de cookies',
-      close: 'Cerrar'
+        'Permiten medir campañas publicitarias y personalizar anuncios.'
     },
 
     en: {
@@ -58,15 +62,13 @@
         'Required for the basic operation of the website. They cannot be disabled.',
       functionality: 'Functionality',
       functionalityDesc:
-        'Remember preferences and improve website functionality.',
+        'Allow the website to remember preferences and improve its functionality.',
       analytics: 'Analytics',
       analyticsDesc:
-        'Help us understand website usage and measure its performance.',
+        'Help us understand how the website is used and measure its performance.',
       advertising: 'Advertising',
       advertisingDesc:
-        'Help measure campaigns and provide more relevant advertising.',
-      policy: 'Cookie policy',
-      close: 'Close'
+        'Allow advertising campaigns to be measured and ads to be personalized.'
     },
 
     gl: {
@@ -78,7 +80,7 @@
       configure: 'Configurar',
       preferences: 'Preferencias de cookies',
       preferencesDescription:
-        'Podes escoller que categorías de cookies permites.',
+        'Podes elixir que categorías de cookies permites.',
       save: 'Gardar preferencias',
       necessary: 'Necesarias',
       necessaryDesc:
@@ -91,284 +93,271 @@
         'Axúdannos a comprender o uso do sitio web e medir o seu rendemento.',
       advertising: 'Publicidade',
       advertisingDesc:
-        'Permiten medir campañas e ofrecer publicidade máis relevante.',
-      policy: 'Política de cookies',
-      close: 'Pechar'
+        'Permiten medir campañas publicitarias e personalizar anuncios.'
     }
+
   };
 
 
-  // =========================================================
+  // ==========================================================
   // IDIOMA
-  // =========================================================
+  // ==========================================================
 
-  const fallback =
-    cfg.language && cfg.language.fallback
-      ? cfg.language.fallback
-      : 'es';
+  const supportedLanguages = ['es', 'en', 'gl'];
 
-  let lang =
-    cfg.language && cfg.language.mode
-      ? cfg.language.mode
-      : 'auto';
+  const getBrowserLanguage = function () {
+    const browserLanguage =
+      (navigator.language || navigator.userLanguage || '')
+        .toLowerCase()
+        .split('-')[0];
 
-  if (lang === 'auto') {
-    lang = (navigator.language || fallback)
-      .toLowerCase()
-      .split('-')[0];
-  }
-
-  if (!i18n[lang]) lang = fallback;
-  if (!i18n[lang]) lang = 'es';
-
-  const t = i18n[lang];
-
-
-  // =========================================================
-  // TEXTOS
-  // =========================================================
-
-  const useCustomTexts =
-    cfg.texts && cfg.texts.mode === 'custom';
-
-  function customText(value, standard) {
-    if (
-      useCustomTexts &&
-      typeof value === 'string' &&
-      value.length > 0
-    ) {
-      return value;
-    }
-
-    return standard;
-  }
-
-  const text = {
-    title: customText(
-      cfg.texts && cfg.texts.bannerTitle,
-      t.title
-    ),
-
-    description: customText(
-      cfg.texts && cfg.texts.bannerDescription,
-      t.description
-    ),
-
-    accept: customText(
-      cfg.texts && cfg.texts.accept,
-      t.accept
-    ),
-
-    reject: customText(
-      cfg.texts && cfg.texts.reject,
-      t.reject
-    ),
-
-    configure: customText(
-      cfg.texts && cfg.texts.preferences,
-      t.configure
-    ),
-
-    preferences: customText(
-      cfg.texts && cfg.texts.preferencesTitle,
-      t.preferences
-    ),
-
-    preferencesDescription: customText(
-      cfg.texts && cfg.texts.preferencesDescription,
-      t.preferencesDescription
-    ),
-
-    save: customText(
-      cfg.texts && cfg.texts.save,
-      t.save
-    )
+    return supportedLanguages.indexOf(browserLanguage) >= 0
+      ? browserLanguage
+      : null;
   };
 
 
-  // =========================================================
-  // CSS ORESTBIDA
-  // =========================================================
+  const languageConfig = cfg.language || {};
 
-  if (!document.querySelector('link[data-adsgora-cc]')) {
-    const link = document.createElement('link');
+  let lang;
+
+  if (languageConfig.mode === 'auto') {
+    lang =
+      getBrowserLanguage() ||
+      languageConfig.fallback ||
+      'es';
+  } else {
+    lang =
+      languageConfig.mode ||
+      languageConfig.fallback ||
+      'es';
+  }
+
+  if (supportedLanguages.indexOf(lang) === -1) {
+    lang = 'es';
+  }
+
+
+  // ==========================================================
+  // TEXTOS
+  // ==========================================================
+
+  const baseTexts = i18n[lang] || i18n.es;
+  const textConfig = cfg.texts || {};
+
+  const customText =
+    textConfig.mode === 'custom';
+
+
+  const texts = {
+
+    title:
+      customText && textConfig.bannerTitle
+        ? textConfig.bannerTitle
+        : baseTexts.title,
+
+    description:
+      customText && textConfig.bannerDescription
+        ? textConfig.bannerDescription
+        : baseTexts.description,
+
+    accept:
+      customText && textConfig.accept
+        ? textConfig.accept
+        : baseTexts.accept,
+
+    reject:
+      customText && textConfig.reject
+        ? textConfig.reject
+        : baseTexts.reject,
+
+    configure:
+      customText && textConfig.preferences
+        ? textConfig.preferences
+        : baseTexts.configure,
+
+    preferences:
+      customText && textConfig.preferencesTitle
+        ? textConfig.preferencesTitle
+        : baseTexts.preferences,
+
+    preferencesDescription:
+      customText && textConfig.preferencesDescription
+        ? textConfig.preferencesDescription
+        : baseTexts.preferencesDescription,
+
+    save:
+      customText && textConfig.save
+        ? textConfig.save
+        : baseTexts.save
+
+  };
+
+
+  // ==========================================================
+  // CARGAR CSS DE ORESTBIDA
+  // ==========================================================
+
+  const existingCSS =
+    document.querySelector(
+      'link[href="' + CSS + '"]'
+    );
+
+  if (!existingCSS) {
+
+    const link =
+      document.createElement('link');
 
     link.rel = 'stylesheet';
     link.href = CSS;
-    link.dataset.adsgoraCc = '1';
 
     document.head.appendChild(link);
   }
 
 
-  // =========================================================
+  // ==========================================================
   // DISEÑO
-  // =========================================================
+  // ==========================================================
 
-  const design = cfg.design || {};
+  const design =
+    cfg.design || {};
 
   const acceptColor =
-    design.acceptButtonColor || '#2563EB';
+    design.acceptButtonColor ||
+    '#2563EB';
 
   const rejectColor =
-    design.rejectButtonColor || '#30363D';
+    design.rejectButtonColor ||
+    '#30363D';
 
   const settingsColor =
-    design.settingsButtonColor || '#E9EEF2';
+    design.settingsButtonColor ||
+    '#E9EEF2';
 
 
-  // =========================================================
-  // CSS ADSGORA
-  //
-  // No modificamos:
-  // - ancho de .cm
-  // - posición de .cm
-  // - .cm__btns
-  // - .cm__btn-group
-  //
-  // El layout es responsabilidad de Orestbida.
-  // =========================================================
+  const style =
+    document.createElement('style');
 
-  if (!document.getElementById('adsgora-cc-style')) {
-    const style = document.createElement('style');
+  style.id =
+    'adsgora-cookieconsent-style';
 
-    style.id = 'adsgora-cc-style';
+  style.textContent = `
 
-    style.textContent = `
+    /* ======================================================
+       MODAL
+       ====================================================== */
 
-      /* MODAL */
-
-      #cc-main .cm {
-        box-sizing: border-box !important;
-
-        border-radius:
-          12px !important;
-
-        box-shadow:
-          0 8px 30px
-          rgba(0, 0, 0, .16) !important;
-      }
+    #cc-main .cm {
+      box-sizing: border-box;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.18);
+    }
 
 
-      /* PREFERENCIAS */
+    /* ======================================================
+       PREFERENCIAS
+       ====================================================== */
 
+    #cc-main .pm {
+      box-sizing: border-box;
+      border-radius: 12px;
+      box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.18);
+    }
+
+
+    /* ======================================================
+       ENLACES
+       ====================================================== */
+
+    #cc-main .cm__desc a,
+    #cc-main .pm a {
+      text-decoration: underline;
+    }
+
+
+    /* ======================================================
+       BOTONES
+       ====================================================== */
+
+    #cc-main .cm__btn {
+      border-radius: 7px;
+      transition:
+        opacity 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    #cc-main .cm__btn:hover {
+      opacity: 0.92;
+    }
+
+
+    /* Aceptar */
+
+    #cc-main .cm__btn[data-role="all"] {
+      background: ${acceptColor};
+      border-color: ${acceptColor};
+      color: #fff;
+    }
+
+
+    /* Rechazar */
+
+    #cc-main .cm__btn[data-role="necessary"] {
+      background: ${rejectColor};
+      border-color: ${rejectColor};
+      color: #fff;
+    }
+
+
+    /* Configurar */
+
+    #cc-main
+    .cm__btns
+    > .cm__btn-group:last-child
+    .cm__btn {
+      background: ${settingsColor};
+      border-color: ${settingsColor};
+      color: #202124;
+    }
+
+
+    /* ======================================================
+       MÓVIL
+       ====================================================== */
+
+    @media (max-width: 600px) {
+
+      #cc-main .cm,
       #cc-main .pm {
-        box-sizing: border-box !important;
-
-        border-radius:
-          12px !important;
-
-        box-shadow:
-          0 8px 30px
-          rgba(0, 0, 0, .16) !important;
+        max-width: calc(100vw - 24px);
       }
 
+    }
 
-      /* ENLACES */
-
-      #cc-main .cm__desc a,
-      #cc-main .pm__section-desc a {
-        text-decoration:
-          underline;
-
-        text-underline-offset:
-          2px;
-
-        font-weight:
-          500;
-      }
+  `;
 
 
-      /* BOTONES */
+  const oldStyle =
+    document.getElementById(
+      'adsgora-cookieconsent-style'
+    );
 
-      #cc-main .cm__btn {
-        border-radius:
-          7px !important;
-
-        transition:
-          opacity .15s ease !important;
-      }
-
-
-      #cc-main .cm__btn:hover {
-        opacity:
-          .90;
-      }
-
-
-      /* ACEPTAR */
-
-      #cc-main
-      .cm__btn[data-role="all"] {
-        background:
-          ${acceptColor} !important;
-
-        color:
-          #fff !important;
-      }
-
-
-      /* RECHAZAR */
-
-      #cc-main
-      .cm__btn[data-role="necessary"] {
-        background:
-          ${rejectColor} !important;
-
-        color:
-          #fff !important;
-      }
-
-
-      /* CONFIGURAR
-       *
-       * Únicamente cambiamos el color.
-       * No alteramos el layout.
-       */
-
-      #cc-main
-      .cm__btns
-      > .cm__btn-group:last-child
-      .cm__btn {
-        background:
-          ${settingsColor} !important;
-
-        color:
-          #222 !important;
-      }
-
-
-      /* MÓVIL
-       *
-       * Tampoco modificamos el layout.
-       * Solo evitamos que el modal toque
-       * literalmente los bordes del viewport.
-       */
-
-      @media (max-width: 600px) {
-
-        #cc-main .cm {
-          max-width:
-            calc(100vw - 24px) !important;
-        }
-
-        #cc-main .pm {
-          max-width:
-            calc(100vw - 24px) !important;
-        }
-      }
-
-    `;
-
-    document.head.appendChild(style);
+  if (oldStyle) {
+    oldStyle.remove();
   }
 
+  document.head.appendChild(style);
 
-  // =========================================================
+
+  // ==========================================================
   // GOOGLE CONSENT MODE
-  // =========================================================
+  // ==========================================================
 
-  function updateGTM() {
+  const updateGTM = function () {
+
     if (
       typeof window.AdsgoraCookieConsentUpdate !==
       'function'
@@ -376,188 +365,269 @@
       return;
     }
 
+
     const categories = [];
 
-    [
-      'functionality',
-      'analytics',
-      'advertising'
-    ].forEach(function (category) {
-      if (CC.acceptedCategory(category)) {
-        categories.push(category);
-      }
-    });
+
+    if (
+      CC.acceptedCategory('functionality')
+    ) {
+      categories.push('functionality');
+    }
+
+
+    if (
+      CC.acceptedCategory('analytics')
+    ) {
+      categories.push('analytics');
+    }
+
+
+    if (
+      CC.acceptedCategory('advertising')
+    ) {
+      categories.push('advertising');
+    }
+
 
     window.AdsgoraCookieConsentUpdate(
       categories
     );
-  }
+  };
 
 
-  // =========================================================
+  // ==========================================================
   // BOTÓN PERMANENTE DE PREFERENCIAS
-  // =========================================================
+  // ==========================================================
 
-  function showPreferencesButton() {
-    if (
-      !cfg.preferencesTab ||
-      !cfg.preferencesTab.enabled
-    ) {
-      return;
-    }
+  const showPreferencesButton =
+    function () {
 
-    if (
-      document.getElementById(
-        'adsgora-cc-settings'
-      )
-    ) {
-      return;
-    }
+      const buttonConfig =
+        cfg.preferencesTab || {};
 
-    const button =
-      document.createElement('button');
 
-    button.id =
-      'adsgora-cc-settings';
-
-    button.type =
-      'button';
-
-    button.textContent =
-      cfg.preferencesTab.text || '🍪';
-
-    Object.assign(
-      button.style,
-      {
-        position: 'fixed',
-
-        bottom: '16px',
-
-        width: '44px',
-
-        height: '44px',
-
-        padding: '0',
-
-        border:
-          '1px solid rgba(0,0,0,.12)',
-
-        borderRadius:
-          '50%',
-
-        background:
-          '#fff',
-
-        color:
-          '#222',
-
-        cursor:
-          'pointer',
-
-        zIndex:
-          '2147483646',
-
-        boxShadow:
-          '0 3px 12px rgba(0,0,0,.18)',
-
-        fontSize:
-          '20px',
-
-        lineHeight:
-          '42px',
-
-        textAlign:
-          'center'
+      if (!buttonConfig.enabled) {
+        return;
       }
-    );
-
-    const position =
-      cfg.preferencesTab.position ===
-      'bottom-left'
-        ? 'left'
-        : 'right';
-
-    button.style[position] =
-      '16px';
-
-    button.onclick =
-      function () {
-        CC.showPreferences();
-      };
-
-    document.body.appendChild(
-      button
-    );
-  }
 
 
-  // =========================================================
+      if (
+        document.getElementById(
+          'adsgora-cookie-preferences'
+        )
+      ) {
+        return;
+      }
+
+
+      const button =
+        document.createElement('button');
+
+
+      button.id =
+        'adsgora-cookie-preferences';
+
+      button.type =
+        'button';
+
+
+      button.innerHTML =
+        buttonConfig.text || '🍪';
+
+
+      button.setAttribute(
+        'aria-label',
+        texts.preferences
+      );
+
+
+      button.style.position =
+        'fixed';
+
+      button.style.bottom =
+        '16px';
+
+      button.style.width =
+        '44px';
+
+      button.style.height =
+        '44px';
+
+      button.style.border =
+        '0';
+
+      button.style.borderRadius =
+        '50%';
+
+      button.style.cursor =
+        'pointer';
+
+      button.style.zIndex =
+        '2147483646';
+
+      button.style.display =
+        'flex';
+
+      button.style.alignItems =
+        'center';
+
+      button.style.justifyContent =
+        'center';
+
+      button.style.fontSize =
+        '20px';
+
+      button.style.lineHeight =
+        '1';
+
+      button.style.background =
+        '#ffffff';
+
+      button.style.boxShadow =
+        '0 3px 14px rgba(0,0,0,.20)';
+
+
+      if (
+        buttonConfig.position ===
+        'bottom-left'
+      ) {
+
+        button.style.left =
+          '16px';
+
+      } else {
+
+        button.style.right =
+          '16px';
+
+      }
+
+
+      button.addEventListener(
+        'click',
+        function () {
+
+          CC.showPreferences();
+
+        }
+      );
+
+
+      document.body.appendChild(
+        button
+      );
+    };
+
+
+  // ==========================================================
   // POLÍTICA DE COOKIES
-  // =========================================================
-
-  const policyUrl =
-    cfg.policy && cfg.policy.url
-      ? cfg.policy.url
-      : '#';
-
-  const policyText =
-    cfg.policy && cfg.policy.text
-      ? cfg.policy.text
-      : t.policy;
+  // ==========================================================
 
   const policy =
-    '<a href="' +
-    policyUrl +
-    '" target="_blank" rel="noopener">' +
-    policyText +
-    '</a>';
+    cfg.policy || {};
 
 
-  // =========================================================
+  let description =
+    texts.description;
+
+
+  if (policy.url) {
+
+    const policyText =
+      policy.text ||
+      'Política de cookies';
+
+
+    description +=
+      '<br><br>' +
+      '<a href="' +
+      policy.url +
+      '" target="_blank" rel="noopener">' +
+      policyText +
+      '</a>';
+
+  }
+
+
+  // ==========================================================
+  // COOKIE
+  // ==========================================================
+
+  const cookieConfig =
+    cfg.cookie || {};
+
+
+  const acceptExpiration =
+    Number(
+      cookieConfig.acceptExpiration ||
+      730
+    );
+
+
+  const rejectExpiration =
+    Number(
+      cookieConfig.rejectExpiration ||
+      7
+    );
+
+
+  // ==========================================================
   // COOKIECONSENT
-  // =========================================================
+  // ==========================================================
 
   CC.run({
 
     cookie: {
+
       name:
-        cfg.cookie.name,
+        cookieConfig.name ||
+        'cc_cookie',
+
 
       expiresAfterDays:
         function (cookie) {
-          return (
+
+          if (
             cookie &&
-            cookie.acceptType === 'necessary'
-          )
-            ? Number(
-                cfg.cookie.rejectExpiration
-              )
-            : Number(
-                cfg.cookie.acceptExpiration
-              );
+            cookie.acceptType ===
+            'necessary'
+          ) {
+
+            return rejectExpiration;
+
+          }
+
+          return acceptExpiration;
+
         }
+
     },
 
 
     revision:
       Number(
-        cfg.cookie.revision
+        cookieConfig.revision || 1
       ),
 
 
-    // =======================================================
-    // LAYOUT NATIVO
-    //
-    // Orestbida controla:
-    // - ancho
-    // - posición
-    // - distribución de botones
-    // - responsive
-    // =======================================================
+    // ========================================================
+    // DISEÑO NATIVO ORESTBIDA
+    // ========================================================
 
     guiOptions: {
 
       consentModal: {
+
+        /*
+         * IMPORTANTE:
+         *
+         * No utilizar "bar".
+         *
+         * Cloud inline permite que Orestbida gestione
+         * nativamente ancho, grupos de botones y responsive.
+         */
+
         layout:
           'cloud inline',
 
@@ -569,46 +639,60 @@
 
         flipButtons:
           false
+
       },
 
 
       preferencesModal: {
+
         layout:
           'box',
 
         position:
           'right'
+
       }
+
     },
 
 
-    // =======================================================
+    // ========================================================
     // CATEGORÍAS
-    // =======================================================
+    // ========================================================
 
     categories: {
 
       necessary: {
-        enabled: true,
-        readOnly: true
+
+        enabled:
+          true,
+
+        readOnly:
+          true
+
       },
+
 
       functionality: {},
 
+
       analytics: {},
 
+
       advertising: {}
+
     },
 
 
-    // =======================================================
+    // ========================================================
     // IDIOMA
-    // =======================================================
+    // ========================================================
 
     language: {
 
       default:
         lang,
+
 
       translations: {
 
@@ -617,135 +701,166 @@
           consentModal: {
 
             title:
-              text.title,
+              texts.title,
 
             description:
-              text.description +
-              '<br><br>' +
-              policy,
+              description,
 
             acceptAllBtn:
-              text.accept,
+              texts.accept,
 
             acceptNecessaryBtn:
-              text.reject,
+              texts.reject,
 
             showPreferencesBtn:
-              text.configure
+              texts.configure
+
           },
 
 
           preferencesModal: {
 
             title:
-              text.preferences,
+              texts.preferences,
 
             acceptAllBtn:
-              text.accept,
+              texts.accept,
 
             acceptNecessaryBtn:
-              text.reject,
+              texts.reject,
 
             savePreferencesBtn:
-              text.save,
+              texts.save,
 
             closeIconLabel:
-              t.close,
+              'Cerrar',
+
 
             sections: [
 
               {
+
+                title:
+                  texts.preferences,
+
                 description:
-                  text.preferencesDescription +
-                  '<br><br>' +
-                  policy
+                  texts.preferencesDescription
+
               },
 
+
               {
+
                 title:
-                  t.necessary,
+                  baseTexts.necessary,
 
                 description:
-                  t.necessaryDesc,
+                  baseTexts.necessaryDesc,
 
                 linkedCategory:
                   'necessary'
+
               },
 
+
               {
+
                 title:
-                  t.functionality,
+                  baseTexts.functionality,
 
                 description:
-                  t.functionalityDesc,
+                  baseTexts.functionalityDesc,
 
                 linkedCategory:
                   'functionality'
+
               },
 
+
               {
+
                 title:
-                  t.analytics,
+                  baseTexts.analytics,
 
                 description:
-                  t.analyticsDesc,
+                  baseTexts.analyticsDesc,
 
                 linkedCategory:
                   'analytics'
+
               },
 
+
               {
+
                 title:
-                  t.advertising,
+                  baseTexts.advertising,
 
                 description:
-                  t.advertisingDesc,
+                  baseTexts.advertisingDesc,
 
                 linkedCategory:
                   'advertising'
+
               }
+
             ]
+
           }
+
         }
+
       }
+
     },
 
 
-    // =======================================================
-    // EVENTOS
-    // =======================================================
+    // ========================================================
+    // CALLBACKS
+    // ========================================================
 
     onFirstConsent:
       function () {
+
         updateGTM();
+
       },
 
 
     onConsent:
       function () {
+
         updateGTM();
 
         showPreferencesButton();
+
       },
 
 
     onChange:
       function () {
+
         updateGTM();
+
       }
+
   });
 
 
-  // =========================================================
+  // ==========================================================
   // API PÚBLICA
-  // =========================================================
+  // ==========================================================
 
   window.AdsgoraCookieConsent = {
 
     showPreferences:
       function () {
+
         CC.showPreferences();
+
       }
+
   };
+
 
 })();
