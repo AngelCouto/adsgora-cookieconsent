@@ -229,7 +229,7 @@
 
 
   // ==========================================================
-  // DISEÑO
+  // CONFIGURACIÓN DE DISEÑO
   // ==========================================================
 
   const design =
@@ -237,9 +237,11 @@
 
 
   /*
-   * Conservamos el campo de GTM:
+   * bannerWidth se mantiene como porcentaje de viewport
+   * en escritorio.
    *
-   * bannerWidth = porcentaje de ancho en escritorio.
+   * Ejemplo:
+   * 60 -> 60vw
    */
 
   let bannerWidth =
@@ -316,18 +318,20 @@
      * MODAL
      * ========================================================
      *
-     * No modificamos:
-     *
-     * left
-     * right
-     * transform
-     * position
-     *
-     * El posicionamiento sigue siendo responsabilidad
-     * de CookieConsent.
+     * No modificamos position, left, right ni transform.
+     * CookieConsent sigue gestionando el posicionamiento.
      */
 
     #cc-main .cm {
+      box-sizing: border-box;
+      border-radius: 12px;
+
+      box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.18);
+    }
+
+
+    #cc-main .pm {
       box-sizing: border-box;
       border-radius: 12px;
 
@@ -356,7 +360,9 @@
 
     #cc-main .cm__btn {
       border-radius: 7px;
-      transition: opacity 0.15s ease;
+
+      transition:
+        opacity 0.15s ease;
     }
 
 
@@ -365,6 +371,10 @@
     }
 
 
+    /*
+     * Aceptar
+     */
+
     #cc-main .cm__btn[data-role="all"] {
       background: ${acceptColor};
       border-color: ${acceptColor};
@@ -372,12 +382,20 @@
     }
 
 
+    /*
+     * Rechazar
+     */
+
     #cc-main .cm__btn[data-role="necessary"] {
       background: ${rejectColor};
       border-color: ${rejectColor};
       color: #ffffff;
     }
 
+
+    /*
+     * Configurar
+     */
 
     #cc-main .cm__btn[data-role="show"] {
       background: ${settingsColor};
@@ -390,29 +408,28 @@
      * ========================================================
      * ESCRITORIO
      * ========================================================
-     *
-     * bannerWidth continúa siendo un porcentaje.
-     *
-     * Ejemplo:
-     * bannerWidth = 60
-     * -> 60vw
-     *
-     * max-width evita tamaños excesivos.
      */
 
     @media (min-width: 1025px) {
 
+      /*
+       * El ancho procede de bannerWidth.
+       *
+       * max-width protege frente a pantallas muy grandes.
+       */
+
       #cc-main .cm {
         width: ${bannerWidth}vw;
-        max-width: min(1100px, calc(100vw - 48px));
+
+        max-width:
+          min(1100px, calc(100vw - 48px));
 
         margin-bottom: 16px;
       }
 
 
       /*
-       * Después de normalizar los botones mediante JS,
-       * solo tenemos un grupo.
+       * Zona completa de botones.
        */
 
       #cc-main .cm__btns {
@@ -420,20 +437,41 @@
       }
 
 
+      /*
+       * Los tres botones ya han sido agrupados mediante JS.
+       *
+       * space-between distribuye los tres botones por
+       * toda la zona disponible sin pegarlos a los extremos.
+       */
+
       #cc-main .cm__btn-group {
         display: flex;
+
         flex-direction: row;
+
         align-items: center;
-        justify-content: flex-start;
+
+        justify-content: space-between;
 
         width: 100%;
-        gap: 8px;
+
+        gap: 24px;
       }
 
 
+      /*
+       * Los tres botones tienen el mismo peso visual,
+       * pero limitamos su tamaño máximo.
+       */
+
       #cc-main .cm__btn {
+        flex: 1 1 0;
+
         width: auto;
+
         min-width: 130px;
+
+        max-width: 240px;
       }
 
     }
@@ -449,21 +487,39 @@
 
       #cc-main .cm {
         width: calc(100vw - 48px);
+
         max-width: 850px;
 
         margin-bottom: 16px;
       }
 
 
+      #cc-main .cm__btns {
+        width: 100%;
+      }
+
+
       #cc-main .cm__btn-group {
         display: flex;
+
         flex-direction: row;
-        gap: 8px;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        width: 100%;
+
+        gap: 12px;
       }
 
 
       #cc-main .cm__btn {
         flex: 1 1 0;
+
+        width: auto;
+
+        min-width: 0;
       }
 
     }
@@ -477,8 +533,13 @@
 
     @media (max-width: 600px) {
 
+      /*
+       * 12px laterales + 16px inferiores.
+       */
+
       #cc-main .cm {
         width: calc(100vw - 24px);
+
         max-width: calc(100vw - 24px);
 
         margin-left: 12px;
@@ -487,17 +548,34 @@
       }
 
 
+      #cc-main .cm__btns {
+        width: 100%;
+      }
+
+
+      /*
+       * En móvil:
+       *
+       * Configurar
+       * Rechazar
+       * Aceptar
+       */
+
       #cc-main .cm__btn-group {
         display: flex;
+
         flex-direction: column;
 
         width: 100%;
+
         gap: 8px;
       }
 
 
       #cc-main .cm__btn {
         width: 100%;
+
+        max-width: none;
       }
 
 
@@ -518,22 +596,24 @@
   // ==========================================================
 
   /*
-   * Orestbida crea originalmente dos grupos:
+   * CookieConsent crea originalmente:
    *
-   * Grupo 1:
+   * Grupo 1
    *   Aceptar
    *   Rechazar
    *
-   * Grupo 2:
+   * Grupo 2
    *   Configurar
    *
-   * Para nuestro diseño creamos un único grupo:
    *
-   * Configurar
-   * Rechazar
-   * Aceptar
+   * Lo convertimos en:
    *
-   * No tocamos la posición del modal.
+   * Grupo único
+   *   Configurar
+   *   Rechazar
+   *   Aceptar
+   *
+   * Esto permite que el responsive sea mucho más estable.
    */
 
   const normalizeButtons =
@@ -550,15 +630,30 @@
       }
 
 
+      /*
+       * Si ya se normalizó, no repetimos.
+       */
+
+      if (
+        container.getAttribute(
+          'data-adsgora-normalized'
+        ) === 'true'
+      ) {
+        return true;
+      }
+
+
       const configure =
         container.querySelector(
           '[data-role="show"]'
         );
 
+
       const reject =
         container.querySelector(
           '[data-role="necessary"]'
         );
+
 
       const accept =
         container.querySelector(
@@ -575,19 +670,6 @@
       }
 
 
-      /*
-       * Evitar repetir la operación.
-       */
-
-      if (
-        container.getAttribute(
-          'data-adsgora-normalized'
-        ) === 'true'
-      ) {
-        return true;
-      }
-
-
       const group =
         document.createElement('div');
 
@@ -596,19 +678,46 @@
         'cm__btn-group adsgora-btn-group';
 
 
-      group.appendChild(configure);
-      group.appendChild(reject);
-      group.appendChild(accept);
+      /*
+       * Orden solicitado:
+       *
+       * Configurar
+       * Rechazar
+       * Aceptar
+       */
+
+      group.appendChild(
+        configure
+      );
+
+      group.appendChild(
+        reject
+      );
+
+      group.appendChild(
+        accept
+      );
 
 
-      while (container.firstChild) {
+      /*
+       * Eliminamos los grupos originales,
+       * pero conservamos los botones.
+       */
+
+      while (
+        container.firstChild
+      ) {
+
         container.removeChild(
           container.firstChild
         );
+
       }
 
 
-      container.appendChild(group);
+      container.appendChild(
+        group
+      );
 
 
       container.setAttribute(
@@ -621,16 +730,16 @@
     };
 
 
-  /*
-   * El modal se genera dentro de CC.run().
-   * Probamos inmediatamente y, si todavía no existe,
-   * esperamos brevemente a que CookieConsent cree el DOM.
-   */
+  // ==========================================================
+  // PREPARAR BOTONES
+  // ==========================================================
 
   const prepareButtons =
     function () {
 
-      if (normalizeButtons()) {
+      if (
+        normalizeButtons()
+      ) {
         return;
       }
 
@@ -650,7 +759,9 @@
               attempts >= 20
             ) {
 
-              clearInterval(timer);
+              clearInterval(
+                timer
+              );
 
             }
 
@@ -684,9 +795,11 @@
           'functionality'
         )
       ) {
+
         categories.push(
           'functionality'
         );
+
       }
 
 
@@ -695,9 +808,11 @@
           'analytics'
         )
       ) {
+
         categories.push(
           'analytics'
         );
+
       }
 
 
@@ -706,9 +821,11 @@
           'advertising'
         )
       ) {
+
         categories.push(
           'advertising'
         );
+
       }
 
 
@@ -730,7 +847,9 @@
         cfg.preferencesTab || {};
 
 
-      if (!buttonConfig.enabled) {
+      if (
+        !buttonConfig.enabled
+      ) {
         return;
       }
 
@@ -745,18 +864,22 @@
 
 
       const button =
-        document.createElement('button');
+        document.createElement(
+          'button'
+        );
 
 
       button.id =
         'adsgora-cookie-preferences';
+
 
       button.type =
         'button';
 
 
       button.textContent =
-        buttonConfig.text || '🍪';
+        buttonConfig.text ||
+        '🍪';
 
 
       button.setAttribute(
@@ -856,7 +979,9 @@
     texts.description;
 
 
-  if (policy.url) {
+  if (
+    policy.url
+  ) {
 
     const policyText =
       policy.text ||
@@ -922,6 +1047,7 @@
 
           }
 
+
           return acceptExpiration;
 
         }
@@ -931,7 +1057,8 @@
 
     revision:
       Number(
-        cookieConfig.revision || 1
+        cookieConfig.revision ||
+        1
       ),
 
 
@@ -944,10 +1071,10 @@
       consentModal: {
 
         /*
-         * Utilizamos BOX.
+         * BOX es intencionado.
          *
-         * Evitamos la estructura horizontal de cloud inline
-         * que estaba provocando el desbordamiento.
+         * Evitamos cloud inline porque divide el modal
+         * horizontalmente entre contenido y botones.
          */
 
         layout:
@@ -1170,7 +1297,7 @@
 
 
   // ==========================================================
-  // PREPARAR BOTONES
+  // PREPARAR ESTRUCTURA VISUAL
   // ==========================================================
 
   prepareButtons();
