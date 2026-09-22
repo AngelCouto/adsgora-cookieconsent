@@ -6,21 +6,15 @@
 
   if (!cfg || !CC) return;
 
-
-  // ==========================================================
-  // ORESTBIDA CSS
-  // ==========================================================
-
   const CSS =
     'https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@3.1.0/dist/cookieconsent.css';
 
 
-  // ==========================================================
+  // =========================================================
   // TRADUCCIONES
-  // ==========================================================
+  // =========================================================
 
   const i18n = {
-
     es: {
       title: 'Utilizamos cookies',
       description:
@@ -48,7 +42,6 @@
       close: 'Cerrar'
     },
 
-
     en: {
       title: 'We use cookies',
       description:
@@ -75,7 +68,6 @@
       policy: 'Cookie policy',
       close: 'Close'
     },
-
 
     gl: {
       title: 'Utilizamos cookies',
@@ -106,9 +98,9 @@
   };
 
 
-  // ==========================================================
+  // =========================================================
   // IDIOMA
-  // ==========================================================
+  // =========================================================
 
   const fallback =
     cfg.language && cfg.language.fallback
@@ -120,88 +112,53 @@
       ? cfg.language.mode
       : 'auto';
 
-
   if (lang === 'auto') {
-
-    lang =
-      (navigator.language || fallback)
-        .toLowerCase()
-        .split('-')[0];
+    lang = (navigator.language || fallback)
+      .toLowerCase()
+      .split('-')[0];
   }
 
-
-  if (!i18n[lang]) {
-    lang = fallback;
-  }
-
-  if (!i18n[lang]) {
-    lang = 'es';
-  }
-
+  if (!i18n[lang]) lang = fallback;
+  if (!i18n[lang]) lang = 'es';
 
   const t = i18n[lang];
 
 
-  // ==========================================================
+  // =========================================================
   // TEXTOS
-  // ==========================================================
+  // =========================================================
 
   const useCustomTexts =
-    cfg.texts &&
-    cfg.texts.mode === 'custom';
+    cfg.texts && cfg.texts.mode === 'custom';
 
-
-  const customText = function (value, standard) {
-
-    if (
+  function customText(value, standard) {
+    return (
       useCustomTexts &&
       typeof value === 'string' &&
       value.length > 0
-    ) {
-      return value;
-    }
-
-    return standard;
-  };
-
+    )
+      ? value
+      : standard;
+  }
 
   const text = {
-
     title:
-      customText(
-        cfg.texts && cfg.texts.bannerTitle,
-        t.title
-      ),
+      customText(cfg.texts && cfg.texts.bannerTitle, t.title),
 
     description:
-      customText(
-        cfg.texts && cfg.texts.bannerDescription,
-        t.description
-      ),
+      customText(cfg.texts && cfg.texts.bannerDescription, t.description),
 
     accept:
-      customText(
-        cfg.texts && cfg.texts.accept,
-        t.accept
-      ),
+      customText(cfg.texts && cfg.texts.accept, t.accept),
 
     reject:
-      customText(
-        cfg.texts && cfg.texts.reject,
-        t.reject
-      ),
+      customText(cfg.texts && cfg.texts.reject, t.reject),
 
     configure:
-      customText(
-        cfg.texts && cfg.texts.preferences,
-        t.configure
-      ),
+      customText(cfg.texts && cfg.texts.preferences, t.configure),
 
     preferences:
-      customText(
-        cfg.texts && cfg.texts.preferencesTitle,
-        t.preferences
-      ),
+      customText(cfg.texts && cfg.texts.preferencesTitle, t.preferences),
 
     preferencesDescription:
       customText(
@@ -210,107 +167,86 @@
       ),
 
     save:
-      customText(
-        cfg.texts && cfg.texts.save,
-        t.save
-      )
+      customText(cfg.texts && cfg.texts.save, t.save)
   };
 
 
-  // ==========================================================
-  // CARGAR CSS ORIGINAL
-  // ==========================================================
+  // =========================================================
+  // CSS ORESTBIDA
+  // =========================================================
 
   if (!document.querySelector('link[data-adsgora-cc]')) {
+    const link = document.createElement('link');
 
-    const link =
-      document.createElement('link');
-
-    link.rel =
-      'stylesheet';
-
-    link.href =
-      CSS;
-
-    link.dataset.adsgoraCc =
-      '1';
+    link.rel = 'stylesheet';
+    link.href = CSS;
+    link.dataset.adsgoraCc = '1';
 
     document.head.appendChild(link);
   }
 
 
-  // ==========================================================
+  // =========================================================
   // DISEÑO
-  // ==========================================================
+  // =========================================================
 
-  const design =
-    cfg.design || {};
+  const design = cfg.design || {};
 
-  let bannerWidth =
-    Number(design.bannerWidth);
+  let bannerWidth = Number(design.bannerWidth);
 
-  if (
-    !bannerWidth ||
-    bannerWidth < 30 ||
-    bannerWidth > 100
-  ) {
+  if (!bannerWidth || bannerWidth < 30 || bannerWidth > 100) {
     bannerWidth = 60;
   }
 
-
   const acceptColor =
-    design.acceptButtonColor ||
-    '#2563EB';
+    design.acceptButtonColor || '#2563EB';
 
   const rejectColor =
-    design.rejectButtonColor ||
-    '#30363D';
+    design.rejectButtonColor || '#30363D';
 
   const settingsColor =
-    design.settingsButtonColor ||
-    '#E9EEF2';
+    design.settingsButtonColor || '#E9EEF2';
 
 
-  // ==========================================================
+  // =========================================================
   // CSS PERSONALIZADO
-  // ==========================================================
+  // =========================================================
 
   if (!document.getElementById('adsgora-cc-style')) {
+    const style = document.createElement('style');
 
-    const style =
-      document.createElement('style');
-
-    style.id =
-      'adsgora-cc-style';
+    style.id = 'adsgora-cc-style';
 
     style.textContent = `
 
-      /* ==============================================
-         CONTENEDOR
-         ============================================== */
+      /* =====================================================
+         BANNER - ESCRITORIO
+         ===================================================== */
 
-      #cc-main .cm {
-        width: ${bannerWidth}vw;
-        max-width: 1100px;
-        min-width: 600px;
+      #cc-main .cm.cm--bar.cm--bottom {
+        width: ${bannerWidth}vw !important;
+        max-width: 1100px !important;
+        min-width: 600px !important;
 
-        left: 50%;
-        right: auto;
-        bottom: 20px;
+        left: 50% !important;
+        right: auto !important;
 
-        transform: translateX(-50%);
+        bottom: 20px !important;
 
-        border-radius: 12px;
+        transform: translateX(-50%) !important;
+
+        border-radius: 12px !important;
+
         box-shadow:
-          0 8px 30px rgba(0, 0, 0, .16);
+          0 8px 30px rgba(0, 0, 0, .16) !important;
 
         overflow: hidden;
       }
 
 
-      /* ==============================================
-         POLÍTICA DE COOKIES
-         ============================================== */
+      /* =====================================================
+         TEXTO / POLÍTICA
+         ===================================================== */
 
       #cc-main .cm__desc a,
       #cc-main .pm__section-desc a {
@@ -320,66 +256,93 @@
       }
 
 
-      /* ==============================================
-         BOTONES
-         ============================================== */
+      /* =====================================================
+         CONTENEDOR DE BOTONES
+
+         DOM REAL DE ORESTBIDA:
+
+         .cm__btns
+           .cm__btn-group
+             aceptar
+             rechazar
+           .cm__btn-group
+             configurar
+
+         Por eso reordenamos los GRUPOS.
+         ===================================================== */
 
       #cc-main .cm__btns {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 10px !important;
       }
 
 
-      /*
-       * Orestbida genera los botones en este orden DOM:
-       *
-       * Aceptar
-       * Rechazar
-       * Configurar
-       *
-       * Flexbox permite mostrar:
-       *
-       * Configurar | espacio | Rechazar | Aceptar
-       */
+      /* Grupo Aceptar + Rechazar */
+      #cc-main .cm__btns > .cm__btn-group:first-child {
+        order: 2 !important;
+
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+
+        margin-left: auto !important;
+      }
 
 
-      #cc-main .cm__btn[data-role="show-preferences"] {
-        order: 1;
-        margin-right: auto;
+      /* Grupo Configurar */
+      #cc-main .cm__btns > .cm__btn-group:last-child {
+        order: 1 !important;
 
-        background:
-          ${settingsColor};
+        margin-right: auto !important;
+      }
 
-        color:
-          #222;
+
+      /* Dentro del primer grupo:
+         Rechazar antes que Aceptar */
+
+      #cc-main
+      .cm__btn-group:first-child
+      .cm__btn[data-role="necessary"] {
+        order: 1 !important;
+      }
+
+
+      #cc-main
+      .cm__btn-group:first-child
+      .cm__btn[data-role="all"] {
+        order: 2 !important;
+      }
+
+
+      /* =====================================================
+         COLORES
+         ===================================================== */
+
+      #cc-main .cm__btn[data-role="all"] {
+        background: ${acceptColor} !important;
+        color: #fff !important;
       }
 
 
       #cc-main .cm__btn[data-role="necessary"] {
-        order: 2;
-
-        background:
-          ${rejectColor};
-
-        color:
-          #fff;
+        background: ${rejectColor} !important;
+        color: #fff !important;
       }
 
 
-      #cc-main .cm__btn[data-role="all"] {
-        order: 3;
-
-        background:
-          ${acceptColor};
-
-        color:
-          #fff;
+      #cc-main
+      .cm__btn-group:last-child
+      .cm__btn {
+        background: ${settingsColor} !important;
+        color: #222 !important;
       }
 
 
       #cc-main .cm__btn {
-        border-radius: 7px;
+        border-radius: 7px !important;
+
         transition:
           opacity .15s ease,
           transform .15s ease;
@@ -391,70 +354,168 @@
       }
 
 
-      /* ==============================================
+      /* =====================================================
          TABLET
-         ============================================== */
+         ===================================================== */
 
       @media (max-width: 900px) {
 
-        #cc-main .cm {
-          width: 85vw;
-          min-width: 0;
-          max-width: none;
+        #cc-main .cm.cm--bar.cm--bottom {
+          width: 85vw !important;
+
+          max-width:
+            calc(100vw - 40px) !important;
+
+          min-width: 0 !important;
+
+          left: 50% !important;
+          right: auto !important;
+
+          bottom: 20px !important;
+
+          transform:
+            translateX(-50%) !important;
         }
       }
 
 
-      /* ==============================================
+      /* =====================================================
          MÓVIL
-         ============================================== */
+         ===================================================== */
 
       @media (max-width: 600px) {
 
-        #cc-main .cm {
-          width: calc(100vw - 24px);
-          min-width: 0;
-          max-width: none;
+        #cc-main .cm.cm--bar.cm--bottom {
+          /*
+           * En móvil ignoramos bannerWidth.
+           *
+           * 100vw - 32px =
+           * 16px margen izquierdo
+           * 16px margen derecho
+           */
 
-          bottom: 12px;
+          width:
+            calc(100vw - 32px) !important;
 
-          border-radius: 10px;
-        }
+          max-width:
+            calc(100vw - 32px) !important;
 
+          min-width:
+            0 !important;
 
-        #cc-main .cm__btns {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
+          left:
+            16px !important;
+
+          right:
+            16px !important;
+
+          bottom:
+            16px !important;
+
+          transform:
+            none !important;
+
+          border-radius:
+            10px !important;
         }
 
 
         /*
-         * En móvil priorizamos:
-         *
-         * Aceptar
-         * Rechazar
-         * Configurar
+         * Los dos grupos pasan a una columna.
          */
 
-        #cc-main .cm__btn[data-role="all"] {
-          order: 1;
+        #cc-main .cm__btns {
+          display:
+            flex !important;
+
+          flex-direction:
+            column !important;
+
+          align-items:
+            stretch !important;
+
+          gap:
+            8px !important;
         }
 
 
-        #cc-main .cm__btn[data-role="necessary"] {
-          order: 2;
+        /*
+         * Grupo Aceptar/Rechazar primero.
+         */
+
+        #cc-main
+        .cm__btns
+        > .cm__btn-group:first-child {
+          order:
+            1 !important;
+
+          width:
+            100% !important;
+
+          display:
+            flex !important;
+
+          flex-direction:
+            column !important;
+
+          gap:
+            8px !important;
+
+          margin:
+            0 !important;
         }
 
 
-        #cc-main .cm__btn[data-role="show-preferences"] {
-          order: 3;
-          margin-right: 0;
+        /*
+         * Configurar después.
+         */
+
+        #cc-main
+        .cm__btns
+        > .cm__btn-group:last-child {
+          order:
+            2 !important;
+
+          width:
+            100% !important;
+
+          margin:
+            0 !important;
         }
 
+
+        /*
+         * Aceptar primero.
+         */
+
+        #cc-main
+        .cm__btn-group:first-child
+        .cm__btn[data-role="all"] {
+          order:
+            1 !important;
+        }
+
+
+        /*
+         * Rechazar segundo.
+         */
+
+        #cc-main
+        .cm__btn-group:first-child
+        .cm__btn[data-role="necessary"] {
+          order:
+            2 !important;
+        }
+
+
+        /*
+         * Todos los botones ocupan
+         * el ancho disponible.
+         */
 
         #cc-main .cm__btn {
-          width: 100%;
+          width:
+            100% !important;
         }
       }
     `;
@@ -463,49 +524,38 @@
   }
 
 
-  // ==========================================================
-  // ACTUALIZAR GTM / CONSENT MODE
-  // ==========================================================
+  // =========================================================
+  // CONSENT MODE
+  // =========================================================
 
   function updateGTM() {
-
     if (
-      typeof window.AdsgoraCookieConsentUpdate !==
-      'function'
+      typeof window.AdsgoraCookieConsentUpdate !== 'function'
     ) {
       return;
     }
 
-
     const categories = [];
-
 
     [
       'functionality',
       'analytics',
       'advertising'
     ].forEach(function (category) {
-
-      if (
-        CC.acceptedCategory(category)
-      ) {
+      if (CC.acceptedCategory(category)) {
         categories.push(category);
       }
     });
 
-
-    window.AdsgoraCookieConsentUpdate(
-      categories
-    );
+    window.AdsgoraCookieConsentUpdate(categories);
   }
 
 
-  // ==========================================================
-  // BOTÓN PERMANENTE DE PREFERENCIAS
-  // ==========================================================
+  // =========================================================
+  // ACCESO PERMANENTE A PREFERENCIAS
+  // =========================================================
 
   function showPreferencesButton() {
-
     if (
       !cfg.preferencesTab ||
       !cfg.preferencesTab.enabled
@@ -513,19 +563,14 @@
       return;
     }
 
-
     if (
-      document.getElementById(
-        'adsgora-cc-settings'
-      )
+      document.getElementById('adsgora-cc-settings')
     ) {
       return;
     }
 
-
     const button =
       document.createElement('button');
-
 
     button.id =
       'adsgora-cc-settings';
@@ -536,70 +581,55 @@
     button.textContent =
       cfg.preferencesTab.text || '🍪';
 
-
-    Object.assign(
-      button.style,
-      {
-        position: 'fixed',
-        bottom: '16px',
-        width: '44px',
-        height: '44px',
-        padding: '0',
-        border: '1px solid rgba(0,0,0,.12)',
-        borderRadius: '50%',
-        background: '#fff',
-        color: '#222',
-        cursor: 'pointer',
-        zIndex: '2147483646',
-        boxShadow:
-          '0 3px 12px rgba(0,0,0,.18)',
-        fontSize: '20px',
-        lineHeight: '42px',
-        textAlign: 'center'
-      }
-    );
-
+    Object.assign(button.style, {
+      position: 'fixed',
+      bottom: '16px',
+      width: '44px',
+      height: '44px',
+      padding: '0',
+      border: '1px solid rgba(0,0,0,.12)',
+      borderRadius: '50%',
+      background: '#fff',
+      color: '#222',
+      cursor: 'pointer',
+      zIndex: '2147483646',
+      boxShadow:
+        '0 3px 12px rgba(0,0,0,.18)',
+      fontSize: '20px',
+      lineHeight: '42px',
+      textAlign: 'center'
+    });
 
     const position =
-      cfg.preferencesTab.position ===
-      'bottom-left'
+      cfg.preferencesTab.position === 'bottom-left'
         ? 'left'
         : 'right';
-
 
     button.style[position] =
       '16px';
 
-
     button.onclick =
       function () {
-
         CC.showPreferences();
       };
 
-
-    document.body.appendChild(
-      button
-    );
+    document.body.appendChild(button);
   }
 
 
-  // ==========================================================
+  // =========================================================
   // POLÍTICA DE COOKIES
-  // ==========================================================
+  // =========================================================
 
   const policyUrl =
     cfg.policy && cfg.policy.url
       ? cfg.policy.url
       : '#';
 
-
   const policyText =
-    cfg.policy &&
-    cfg.policy.text
+    cfg.policy && cfg.policy.text
       ? cfg.policy.text
       : t.policy;
-
 
   const policy =
     '<a href="' +
@@ -609,48 +639,35 @@
     '</a>';
 
 
-  // ==========================================================
-  // COOKIECONSENT
-  // ==========================================================
+  // =========================================================
+  // ORESTBIDA
+  // =========================================================
 
   CC.run({
 
     cookie: {
-
       name:
         cfg.cookie.name,
 
       expiresAfterDays:
         function (cookie) {
-
           return (
             cookie &&
             cookie.acceptType === 'necessary'
           )
-            ? Number(
-                cfg.cookie.rejectExpiration
-              )
-            : Number(
-                cfg.cookie.acceptExpiration
-              );
+            ? Number(cfg.cookie.rejectExpiration)
+            : Number(cfg.cookie.acceptExpiration);
         }
     },
 
 
     revision:
-      Number(
-        cfg.cookie.revision
-      ),
+      Number(cfg.cookie.revision),
 
-
-    // ========================================================
-    // PRESENTACIÓN
-    // ========================================================
 
     guiOptions: {
 
       consentModal: {
-
         layout:
           'bar',
 
@@ -663,7 +680,6 @@
 
 
       preferencesModal: {
-
         layout:
           'box',
 
@@ -672,10 +688,6 @@
       }
     },
 
-
-    // ========================================================
-    // CATEGORÍAS
-    // ========================================================
 
     categories: {
 
@@ -691,10 +703,6 @@
       advertising: {}
     },
 
-
-    // ========================================================
-    // IDIOMA
-    // ========================================================
 
     language: {
 
@@ -802,43 +810,37 @@
     },
 
 
-    // ========================================================
+    // =======================================================
     // EVENTOS
-    // ========================================================
+    // =======================================================
 
     onFirstConsent:
       function () {
-
         updateGTM();
       },
 
 
     onConsent:
       function () {
-
         updateGTM();
-
         showPreferencesButton();
       },
 
 
     onChange:
       function () {
-
         updateGTM();
       }
   });
 
 
-  // ==========================================================
-  // API PÚBLICA
-  // ==========================================================
+  // =========================================================
+  // API
+  // =========================================================
 
   window.AdsgoraCookieConsent = {
-
     showPreferences:
       function () {
-
         CC.showPreferences();
       }
   };
