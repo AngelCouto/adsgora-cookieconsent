@@ -144,58 +144,50 @@
   }
 
   const text = {
-    title:
-      customText(
-        cfg.texts && cfg.texts.bannerTitle,
-        t.title
-      ),
+    title: customText(
+      cfg.texts && cfg.texts.bannerTitle,
+      t.title
+    ),
 
-    description:
-      customText(
-        cfg.texts && cfg.texts.bannerDescription,
-        t.description
-      ),
+    description: customText(
+      cfg.texts && cfg.texts.bannerDescription,
+      t.description
+    ),
 
-    accept:
-      customText(
-        cfg.texts && cfg.texts.accept,
-        t.accept
-      ),
+    accept: customText(
+      cfg.texts && cfg.texts.accept,
+      t.accept
+    ),
 
-    reject:
-      customText(
-        cfg.texts && cfg.texts.reject,
-        t.reject
-      ),
+    reject: customText(
+      cfg.texts && cfg.texts.reject,
+      t.reject
+    ),
 
-    configure:
-      customText(
-        cfg.texts && cfg.texts.preferences,
-        t.configure
-      ),
+    configure: customText(
+      cfg.texts && cfg.texts.preferences,
+      t.configure
+    ),
 
-    preferences:
-      customText(
-        cfg.texts && cfg.texts.preferencesTitle,
-        t.preferences
-      ),
+    preferences: customText(
+      cfg.texts && cfg.texts.preferencesTitle,
+      t.preferences
+    ),
 
-    preferencesDescription:
-      customText(
-        cfg.texts && cfg.texts.preferencesDescription,
-        t.preferencesDescription
-      ),
+    preferencesDescription: customText(
+      cfg.texts && cfg.texts.preferencesDescription,
+      t.preferencesDescription
+    ),
 
-    save:
-      customText(
-        cfg.texts && cfg.texts.save,
-        t.save
-      )
+    save: customText(
+      cfg.texts && cfg.texts.save,
+      t.save
+    )
   };
 
 
   // =========================================================
-  // CSS ORIGINAL ORESTBIDA
+  // CSS ORESTBIDA
   // =========================================================
 
   if (!document.querySelector('link[data-adsgora-cc]')) {
@@ -210,7 +202,7 @@
 
 
   // =========================================================
-  // CONFIGURACIÓN DE DISEÑO
+  // DISEÑO
   // =========================================================
 
   const design = cfg.design || {};
@@ -239,8 +231,12 @@
   // CSS ADSGORA
   //
   // IMPORTANTE:
-  // No modificamos .cm__btns ni .cm__btn-group.
-  // Orestbida conserva íntegramente su layout de botones.
+  //
+  // No modificamos:
+  //   .cm__btns
+  //   .cm__btn-group
+  //
+  // Orestbida controla completamente el layout de botones.
   // =========================================================
 
   if (!document.getElementById('adsgora-cc-style')) {
@@ -251,23 +247,10 @@
     style.textContent = `
 
       /* =====================================================
-         BANNER - ESCRITORIO
+         MODAL DE CONSENTIMIENTO
          ===================================================== */
 
-      #cc-main .cm.cm--bar.cm--bottom {
-
-        width: ${bannerWidth}vw !important;
-        max-width: 1100px !important;
-        min-width: 0 !important;
-
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 20px !important;
-
-        margin-left: auto !important;
-        margin-right: auto !important;
-
-        transform: none !important;
+      #cc-main .cm {
 
         box-sizing: border-box !important;
 
@@ -275,57 +258,116 @@
 
         box-shadow:
           0 8px 30px rgba(0, 0, 0, .16) !important;
+      }
 
-        overflow: hidden;
+
+      /*
+       * ESCRITORIO
+       *
+       * El layout y posición son nativos de Orestbida.
+       * Nosotros solo definimos el ancho máximo.
+       */
+
+      @media (min-width: 901px) {
+
+        #cc-main .cm {
+
+          width:
+            ${bannerWidth}vw !important;
+
+          max-width:
+            1100px !important;
+        }
+      }
+
+
+      /*
+       * TABLET
+       */
+
+      @media
+      (min-width: 601px)
+      and
+      (max-width: 900px) {
+
+        #cc-main .cm {
+
+          width:
+            calc(100vw - 40px) !important;
+
+          max-width:
+            850px !important;
+        }
+      }
+
+
+      /*
+       * MÓVIL
+       *
+       * Dejamos 16px de margen mínimo.
+       */
+
+      @media (max-width: 600px) {
+
+        #cc-main .cm {
+
+          width:
+            calc(100vw - 32px) !important;
+
+          max-width:
+            calc(100vw - 32px) !important;
+
+          border-radius:
+            10px !important;
+        }
       }
 
 
       /* =====================================================
-         POLÍTICA DE COOKIES
+         ENLACES
          ===================================================== */
 
       #cc-main .cm__desc a,
       #cc-main .pm__section-desc a {
 
-        text-decoration: underline;
+        text-decoration:
+          underline;
 
-        text-underline-offset: 2px;
+        text-underline-offset:
+          2px;
 
-        font-weight: 500;
+        font-weight:
+          500;
       }
 
 
       /* =====================================================
          BOTONES
-
-         Solo modificamos apariencia.
-         NO modificamos:
-         - display
-         - order
-         - flex
-         - margin
-         - grupos
-         - posición
+         
+         SOLO APARIENCIA.
+         NO SE MODIFICA SU DISTRIBUCIÓN.
          ===================================================== */
 
       #cc-main .cm__btn {
 
-        border-radius: 7px !important;
+        border-radius:
+          7px !important;
 
         transition:
-          opacity .15s ease,
-          transform .15s ease;
+          opacity .15s ease !important;
       }
 
 
       #cc-main .cm__btn:hover {
-        opacity: .90;
+        opacity:
+          .90;
       }
 
 
       /* ACEPTAR */
 
-      #cc-main .cm__btn[data-role="all"] {
+      #cc-main
+      .cm__btn[data-role="all"] {
 
         background:
           ${acceptColor} !important;
@@ -337,7 +379,8 @@
 
       /* RECHAZAR */
 
-      #cc-main .cm__btn[data-role="necessary"] {
+      #cc-main
+      .cm__btn[data-role="necessary"] {
 
         background:
           ${rejectColor} !important;
@@ -348,9 +391,9 @@
 
 
       /* CONFIGURAR
-
-         Solo aplicamos color al botón.
-         No modificamos su grupo ni posición.
+         
+         Solo cambiamos el color.
+         No modificamos su posición.
       */
 
       #cc-main
@@ -365,80 +408,6 @@
           #222 !important;
       }
 
-
-      /* =====================================================
-         TABLET
-         ===================================================== */
-
-      @media (max-width: 900px) {
-
-        #cc-main .cm.cm--bar.cm--bottom {
-
-          width: 85% !important;
-
-          max-width:
-            calc(100% - 40px) !important;
-
-          min-width:
-            0 !important;
-
-          left: 0 !important;
-          right: 0 !important;
-
-          bottom: 20px !important;
-
-          margin-left:
-            auto !important;
-
-          margin-right:
-            auto !important;
-
-          transform:
-            none !important;
-        }
-      }
-
-
-      /* =====================================================
-         MÓVIL
-
-         No calculamos el ancho.
-
-         Le indicamos directamente:
-         16px desde la izquierda
-         16px desde la derecha
-         16px desde abajo
-
-         Esto garantiza márgenes simétricos.
-         ===================================================== */
-
-      @media (max-width: 600px) {
-
-        #cc-main .cm.cm--bar.cm--bottom {
-
-          width: auto !important;
-
-          max-width: none !important;
-
-          min-width: 0 !important;
-
-          left: 16px !important;
-
-          right: 16px !important;
-
-          bottom: 16px !important;
-
-          margin: 0 !important;
-
-          transform: none !important;
-
-          box-sizing:
-            border-box !important;
-
-          border-radius:
-            10px !important;
-        }
-      }
     `;
 
     document.head.appendChild(style);
@@ -446,7 +415,7 @@
 
 
   // =========================================================
-  // ACTUALIZAR GOOGLE CONSENT MODE
+  // GOOGLE CONSENT MODE
   // =========================================================
 
   function updateGTM() {
@@ -478,7 +447,7 @@
 
 
   // =========================================================
-  // ACCESO PERMANENTE A PREFERENCIAS
+  // BOTÓN PERMANENTE DE PREFERENCIAS
   // =========================================================
 
   function showPreferencesButton() {
@@ -526,24 +495,32 @@
         border:
           '1px solid rgba(0,0,0,.12)',
 
-        borderRadius: '50%',
+        borderRadius:
+          '50%',
 
-        background: '#fff',
+        background:
+          '#fff',
 
-        color: '#222',
+        color:
+          '#222',
 
-        cursor: 'pointer',
+        cursor:
+          'pointer',
 
-        zIndex: '2147483646',
+        zIndex:
+          '2147483646',
 
         boxShadow:
           '0 3px 12px rgba(0,0,0,.18)',
 
-        fontSize: '20px',
+        fontSize:
+          '20px',
 
-        lineHeight: '42px',
+        lineHeight:
+          '42px',
 
-        textAlign: 'center'
+        textAlign:
+          'center'
       }
     );
 
@@ -558,6 +535,7 @@
 
     button.onclick =
       function () {
+
         CC.showPreferences();
       };
 
@@ -625,6 +603,15 @@
 
     // =======================================================
     // LAYOUT NATIVO ORESTBIDA
+    //
+    // CAMBIO IMPORTANTE:
+    //
+    // Antes:
+    // layout: 'bar'
+    //
+    // Ahora:
+    // layout: 'box wide'
+    //
     // =======================================================
 
     guiOptions: {
@@ -632,12 +619,15 @@
       consentModal: {
 
         layout:
-          'bar',
+          'box wide',
 
         position:
           'bottom center',
 
         equalWeightButtons:
+          false,
+
+        flipButtons:
           false
       },
 
@@ -809,7 +799,7 @@
 
 
   // =========================================================
-  // API
+  // API PÚBLICA
   // =========================================================
 
   window.AdsgoraCookieConsent = {
