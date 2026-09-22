@@ -146,7 +146,10 @@
       customText(cfg.texts && cfg.texts.bannerTitle, t.title),
 
     description:
-      customText(cfg.texts && cfg.texts.bannerDescription, t.description),
+      customText(
+        cfg.texts && cfg.texts.bannerDescription,
+        t.description
+      ),
 
     accept:
       customText(cfg.texts && cfg.texts.accept, t.accept),
@@ -155,10 +158,16 @@
       customText(cfg.texts && cfg.texts.reject, t.reject),
 
     configure:
-      customText(cfg.texts && cfg.texts.preferences, t.configure),
+      customText(
+        cfg.texts && cfg.texts.preferences,
+        t.configure
+      ),
 
     preferences:
-      customText(cfg.texts && cfg.texts.preferencesTitle, t.preferences),
+      customText(
+        cfg.texts && cfg.texts.preferencesTitle,
+        t.preferences
+      ),
 
     preferencesDescription:
       customText(
@@ -194,7 +203,11 @@
 
   let bannerWidth = Number(design.bannerWidth);
 
-  if (!bannerWidth || bannerWidth < 30 || bannerWidth > 100) {
+  if (
+    !bannerWidth ||
+    bannerWidth < 30 ||
+    bannerWidth > 100
+  ) {
     bannerWidth = 60;
   }
 
@@ -219,21 +232,26 @@
 
     style.textContent = `
 
-      /* =====================================================
-         BANNER - ESCRITORIO
-         ===================================================== */
+      /*
+       * ESCRITORIO
+       *
+       * El porcentaje configurado solamente afecta
+       * al escritorio.
+       */
 
       #cc-main .cm.cm--bar.cm--bottom {
         width: ${bannerWidth}vw !important;
-        max-width: 1100px !important;
-        min-width: 600px !important;
+        max-width: min(1100px, calc(100% - 40px)) !important;
+        min-width: 0 !important;
 
         left: 50% !important;
         right: auto !important;
-
         bottom: 20px !important;
 
         transform: translateX(-50%) !important;
+
+        margin: 0 !important;
+        box-sizing: border-box !important;
 
         border-radius: 12px !important;
 
@@ -244,9 +262,9 @@
       }
 
 
-      /* =====================================================
-         TEXTO / POLÍTICA
-         ===================================================== */
+      /*
+       * POLÍTICA DE COOKIES
+       */
 
       #cc-main .cm__desc a,
       #cc-main .pm__section-desc a {
@@ -256,89 +274,19 @@
       }
 
 
-      /* =====================================================
-         CONTENEDOR DE BOTONES
-
-         DOM REAL DE ORESTBIDA:
-
-         .cm__btns
-           .cm__btn-group
-             aceptar
-             rechazar
-           .cm__btn-group
-             configurar
-
-         Por eso reordenamos los GRUPOS.
-         ===================================================== */
+      /*
+       * BOTONES
+       *
+       * No modificamos el orden de Orestbida.
+       */
 
       #cc-main .cm__btns {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
         gap: 10px !important;
       }
 
-
-      /* Grupo Aceptar + Rechazar */
-      #cc-main .cm__btns > .cm__btn-group:first-child {
-        order: 2 !important;
-
-        display: flex !important;
-        flex-direction: row !important;
+      #cc-main .cm__btn-group {
         gap: 10px !important;
-
-        margin-left: auto !important;
       }
-
-
-      /* Grupo Configurar */
-      #cc-main .cm__btns > .cm__btn-group:last-child {
-        order: 1 !important;
-
-        margin-right: auto !important;
-      }
-
-
-      /* Dentro del primer grupo:
-         Rechazar antes que Aceptar */
-
-      #cc-main
-      .cm__btn-group:first-child
-      .cm__btn[data-role="necessary"] {
-        order: 1 !important;
-      }
-
-
-      #cc-main
-      .cm__btn-group:first-child
-      .cm__btn[data-role="all"] {
-        order: 2 !important;
-      }
-
-
-      /* =====================================================
-         COLORES
-         ===================================================== */
-
-      #cc-main .cm__btn[data-role="all"] {
-        background: ${acceptColor} !important;
-        color: #fff !important;
-      }
-
-
-      #cc-main .cm__btn[data-role="necessary"] {
-        background: ${rejectColor} !important;
-        color: #fff !important;
-      }
-
-
-      #cc-main
-      .cm__btn-group:last-child
-      .cm__btn {
-        background: ${settingsColor} !important;
-        color: #222 !important;
-      }
-
 
       #cc-main .cm__btn {
         border-radius: 7px !important;
@@ -348,174 +296,117 @@
           transform .15s ease;
       }
 
-
       #cc-main .cm__btn:hover {
         opacity: .90;
       }
 
 
-      /* =====================================================
-         TABLET
-         ===================================================== */
+      /*
+       * ACEPTAR
+       */
+
+      #cc-main .cm__btn[data-role="all"] {
+        background: ${acceptColor} !important;
+        color: #fff !important;
+      }
+
+
+      /*
+       * RECHAZAR
+       */
+
+      #cc-main .cm__btn[data-role="necessary"] {
+        background: ${rejectColor} !important;
+        color: #fff !important;
+      }
+
+
+      /*
+       * CONFIGURAR
+       *
+       * Es el botón del segundo grupo de Orestbida.
+       */
+
+      #cc-main
+      .cm__btns
+      > .cm__btn-group:last-child
+      .cm__btn {
+        background: ${settingsColor} !important;
+        color: #222 !important;
+      }
+
+
+      /*
+       * TABLET
+       */
 
       @media (max-width: 900px) {
 
         #cc-main .cm.cm--bar.cm--bottom {
-          width: 85vw !important;
-
-          max-width:
-            calc(100vw - 40px) !important;
-
-          min-width: 0 !important;
+          width: 85% !important;
+          max-width: calc(100% - 40px) !important;
 
           left: 50% !important;
           right: auto !important;
-
           bottom: 20px !important;
 
-          transform:
-            translateX(-50%) !important;
+          transform: translateX(-50%) !important;
+
+          margin: 0 !important;
         }
       }
 
 
-      /* =====================================================
-         MÓVIL
-         ===================================================== */
+      /*
+       * MÓVIL
+       *
+       * El porcentaje configurado en GTM se ignora.
+       * Dejamos siempre 16px a cada lado.
+       */
 
       @media (max-width: 600px) {
 
         #cc-main .cm.cm--bar.cm--bottom {
-          /*
-           * En móvil ignoramos bannerWidth.
-           *
-           * 100vw - 32px =
-           * 16px margen izquierdo
-           * 16px margen derecho
-           */
+          width: calc(100% - 32px) !important;
+          max-width: calc(100% - 32px) !important;
 
-          width:
-            calc(100vw - 32px) !important;
+          left: 50% !important;
+          right: auto !important;
+          bottom: 16px !important;
 
-          max-width:
-            calc(100vw - 32px) !important;
+          transform: translateX(-50%) !important;
 
-          min-width:
-            0 !important;
+          margin: 0 !important;
 
-          left:
-            16px !important;
-
-          right:
-            16px !important;
-
-          bottom:
-            16px !important;
-
-          transform:
-            none !important;
-
-          border-radius:
-            10px !important;
+          border-radius: 10px !important;
         }
 
 
         /*
-         * Los dos grupos pasan a una columna.
+         * Botones apilados manteniendo
+         * el orden original de Orestbida.
          */
 
         #cc-main .cm__btns {
-          display:
-            flex !important;
-
-          flex-direction:
-            column !important;
-
-          align-items:
-            stretch !important;
-
-          gap:
-            8px !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 8px !important;
         }
 
+        #cc-main .cm__btn-group {
+          width: 100% !important;
 
-        /*
-         * Grupo Aceptar/Rechazar primero.
-         */
+          display: flex !important;
+          flex-direction: column !important;
 
-        #cc-main
-        .cm__btns
-        > .cm__btn-group:first-child {
-          order:
-            1 !important;
+          gap: 8px !important;
 
-          width:
-            100% !important;
-
-          display:
-            flex !important;
-
-          flex-direction:
-            column !important;
-
-          gap:
-            8px !important;
-
-          margin:
-            0 !important;
+          margin: 0 !important;
         }
-
-
-        /*
-         * Configurar después.
-         */
-
-        #cc-main
-        .cm__btns
-        > .cm__btn-group:last-child {
-          order:
-            2 !important;
-
-          width:
-            100% !important;
-
-          margin:
-            0 !important;
-        }
-
-
-        /*
-         * Aceptar primero.
-         */
-
-        #cc-main
-        .cm__btn-group:first-child
-        .cm__btn[data-role="all"] {
-          order:
-            1 !important;
-        }
-
-
-        /*
-         * Rechazar segundo.
-         */
-
-        #cc-main
-        .cm__btn-group:first-child
-        .cm__btn[data-role="necessary"] {
-          order:
-            2 !important;
-        }
-
-
-        /*
-         * Todos los botones ocupan
-         * el ancho disponible.
-         */
 
         #cc-main .cm__btn {
-          width:
-            100% !important;
+          width: 100% !important;
         }
       }
     `;
@@ -525,12 +416,13 @@
 
 
   // =========================================================
-  // CONSENT MODE
+  // ACTUALIZAR CONSENT MODE
   // =========================================================
 
   function updateGTM() {
     if (
-      typeof window.AdsgoraCookieConsentUpdate !== 'function'
+      typeof window.AdsgoraCookieConsentUpdate !==
+      'function'
     ) {
       return;
     }
@@ -542,6 +434,7 @@
       'analytics',
       'advertising'
     ].forEach(function (category) {
+
       if (CC.acceptedCategory(category)) {
         categories.push(category);
       }
@@ -593,8 +486,7 @@
       color: '#222',
       cursor: 'pointer',
       zIndex: '2147483646',
-      boxShadow:
-        '0 3px 12px rgba(0,0,0,.18)',
+      boxShadow: '0 3px 12px rgba(0,0,0,.18)',
       fontSize: '20px',
       lineHeight: '42px',
       textAlign: 'center'
@@ -605,13 +497,11 @@
         ? 'left'
         : 'right';
 
-    button.style[position] =
-      '16px';
+    button.style[position] = '16px';
 
-    button.onclick =
-      function () {
-        CC.showPreferences();
-      };
+    button.onclick = function () {
+      CC.showPreferences();
+    };
 
     document.body.appendChild(button);
   }
@@ -640,7 +530,7 @@
 
 
   // =========================================================
-  // ORESTBIDA
+  // COOKIECONSENT
   // =========================================================
 
   CC.run({
@@ -651,6 +541,7 @@
 
       expiresAfterDays:
         function (cookie) {
+
           return (
             cookie &&
             cookie.acceptType === 'necessary'
@@ -668,23 +559,14 @@
     guiOptions: {
 
       consentModal: {
-        layout:
-          'bar',
-
-        position:
-          'bottom center',
-
-        equalWeightButtons:
-          false
+        layout: 'bar',
+        position: 'bottom center',
+        equalWeightButtons: false
       },
 
-
       preferencesModal: {
-        layout:
-          'box',
-
-        position:
-          'right'
+        layout: 'box',
+        position: 'right'
       }
     },
 
@@ -814,23 +696,18 @@
     // EVENTOS
     // =======================================================
 
-    onFirstConsent:
-      function () {
-        updateGTM();
-      },
+    onFirstConsent: function () {
+      updateGTM();
+    },
 
+    onConsent: function () {
+      updateGTM();
+      showPreferencesButton();
+    },
 
-    onConsent:
-      function () {
-        updateGTM();
-        showPreferencesButton();
-      },
-
-
-    onChange:
-      function () {
-        updateGTM();
-      }
+    onChange: function () {
+      updateGTM();
+    }
   });
 
 
@@ -839,10 +716,9 @@
   // =========================================================
 
   window.AdsgoraCookieConsent = {
-    showPreferences:
-      function () {
-        CC.showPreferences();
-      }
+    showPreferences: function () {
+      CC.showPreferences();
+    }
   };
 
 })();
