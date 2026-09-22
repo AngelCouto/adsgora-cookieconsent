@@ -132,18 +132,23 @@
     cfg.texts && cfg.texts.mode === 'custom';
 
   function customText(value, standard) {
-    return (
+    if (
       useCustomTexts &&
       typeof value === 'string' &&
       value.length > 0
-    )
-      ? value
-      : standard;
+    ) {
+      return value;
+    }
+
+    return standard;
   }
 
   const text = {
     title:
-      customText(cfg.texts && cfg.texts.bannerTitle, t.title),
+      customText(
+        cfg.texts && cfg.texts.bannerTitle,
+        t.title
+      ),
 
     description:
       customText(
@@ -152,10 +157,16 @@
       ),
 
     accept:
-      customText(cfg.texts && cfg.texts.accept, t.accept),
+      customText(
+        cfg.texts && cfg.texts.accept,
+        t.accept
+      ),
 
     reject:
-      customText(cfg.texts && cfg.texts.reject, t.reject),
+      customText(
+        cfg.texts && cfg.texts.reject,
+        t.reject
+      ),
 
     configure:
       customText(
@@ -176,12 +187,15 @@
       ),
 
     save:
-      customText(cfg.texts && cfg.texts.save, t.save)
+      customText(
+        cfg.texts && cfg.texts.save,
+        t.save
+      )
   };
 
 
   // =========================================================
-  // CSS ORESTBIDA
+  // CSS ORIGINAL ORESTBIDA
   // =========================================================
 
   if (!document.querySelector('link[data-adsgora-cc]')) {
@@ -196,7 +210,7 @@
 
 
   // =========================================================
-  // DISEÑO
+  // CONFIGURACIÓN DE DISEÑO
   // =========================================================
 
   const design = cfg.design || {};
@@ -222,7 +236,11 @@
 
 
   // =========================================================
-  // CSS PERSONALIZADO
+  // CSS ADSGORA
+  //
+  // IMPORTANTE:
+  // No modificamos .cm__btns ni .cm__btn-group.
+  // Orestbida conserva íntegramente su layout de botones.
   // =========================================================
 
   if (!document.getElementById('adsgora-cc-style')) {
@@ -232,25 +250,25 @@
 
     style.textContent = `
 
-      /*
-       * ESCRITORIO
-       *
-       * El porcentaje configurado solamente afecta
-       * al escritorio.
-       */
+      /* =====================================================
+         BANNER - ESCRITORIO
+         ===================================================== */
 
       #cc-main .cm.cm--bar.cm--bottom {
+
         width: ${bannerWidth}vw !important;
-        max-width: min(1100px, calc(100% - 40px)) !important;
+        max-width: 1100px !important;
         min-width: 0 !important;
 
-        left: 50% !important;
-        right: auto !important;
+        left: 0 !important;
+        right: 0 !important;
         bottom: 20px !important;
 
-        transform: translateX(-50%) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
 
-        margin: 0 !important;
+        transform: none !important;
+
         box-sizing: border-box !important;
 
         border-radius: 12px !important;
@@ -262,33 +280,36 @@
       }
 
 
-      /*
-       * POLÍTICA DE COOKIES
-       */
+      /* =====================================================
+         POLÍTICA DE COOKIES
+         ===================================================== */
 
       #cc-main .cm__desc a,
       #cc-main .pm__section-desc a {
+
         text-decoration: underline;
+
         text-underline-offset: 2px;
+
         font-weight: 500;
       }
 
 
-      /*
-       * BOTONES
-       *
-       * No modificamos el orden de Orestbida.
-       */
+      /* =====================================================
+         BOTONES
 
-      #cc-main .cm__btns {
-        gap: 10px !important;
-      }
-
-      #cc-main .cm__btn-group {
-        gap: 10px !important;
-      }
+         Solo modificamos apariencia.
+         NO modificamos:
+         - display
+         - order
+         - flex
+         - margin
+         - grupos
+         - posición
+         ===================================================== */
 
       #cc-main .cm__btn {
+
         border-radius: 7px !important;
 
         transition:
@@ -296,117 +317,126 @@
           transform .15s ease;
       }
 
+
       #cc-main .cm__btn:hover {
         opacity: .90;
       }
 
 
-      /*
-       * ACEPTAR
-       */
+      /* ACEPTAR */
 
       #cc-main .cm__btn[data-role="all"] {
-        background: ${acceptColor} !important;
-        color: #fff !important;
+
+        background:
+          ${acceptColor} !important;
+
+        color:
+          #fff !important;
       }
 
 
-      /*
-       * RECHAZAR
-       */
+      /* RECHAZAR */
 
       #cc-main .cm__btn[data-role="necessary"] {
-        background: ${rejectColor} !important;
-        color: #fff !important;
+
+        background:
+          ${rejectColor} !important;
+
+        color:
+          #fff !important;
       }
 
 
-      /*
-       * CONFIGURAR
-       *
-       * Es el botón del segundo grupo de Orestbida.
-       */
+      /* CONFIGURAR
+
+         Solo aplicamos color al botón.
+         No modificamos su grupo ni posición.
+      */
 
       #cc-main
       .cm__btns
       > .cm__btn-group:last-child
       .cm__btn {
-        background: ${settingsColor} !important;
-        color: #222 !important;
+
+        background:
+          ${settingsColor} !important;
+
+        color:
+          #222 !important;
       }
 
 
-      /*
-       * TABLET
-       */
+      /* =====================================================
+         TABLET
+         ===================================================== */
 
       @media (max-width: 900px) {
 
         #cc-main .cm.cm--bar.cm--bottom {
-          width: 85% !important;
-          max-width: calc(100% - 40px) !important;
 
-          left: 50% !important;
-          right: auto !important;
+          width: 85% !important;
+
+          max-width:
+            calc(100% - 40px) !important;
+
+          min-width:
+            0 !important;
+
+          left: 0 !important;
+          right: 0 !important;
+
           bottom: 20px !important;
 
-          transform: translateX(-50%) !important;
+          margin-left:
+            auto !important;
 
-          margin: 0 !important;
+          margin-right:
+            auto !important;
+
+          transform:
+            none !important;
         }
       }
 
 
-      /*
-       * MÓVIL
-       *
-       * El porcentaje configurado en GTM se ignora.
-       * Dejamos siempre 16px a cada lado.
-       */
+      /* =====================================================
+         MÓVIL
+
+         No calculamos el ancho.
+
+         Le indicamos directamente:
+         16px desde la izquierda
+         16px desde la derecha
+         16px desde abajo
+
+         Esto garantiza márgenes simétricos.
+         ===================================================== */
 
       @media (max-width: 600px) {
 
         #cc-main .cm.cm--bar.cm--bottom {
-          width: calc(100% - 32px) !important;
-          max-width: calc(100% - 32px) !important;
 
-          left: 50% !important;
-          right: auto !important;
+          width: auto !important;
+
+          max-width: none !important;
+
+          min-width: 0 !important;
+
+          left: 16px !important;
+
+          right: 16px !important;
+
           bottom: 16px !important;
 
-          transform: translateX(-50%) !important;
-
           margin: 0 !important;
 
-          border-radius: 10px !important;
-        }
+          transform: none !important;
 
+          box-sizing:
+            border-box !important;
 
-        /*
-         * Botones apilados manteniendo
-         * el orden original de Orestbida.
-         */
-
-        #cc-main .cm__btns {
-          display: flex !important;
-          flex-direction: column !important;
-          align-items: stretch !important;
-          gap: 8px !important;
-        }
-
-        #cc-main .cm__btn-group {
-          width: 100% !important;
-
-          display: flex !important;
-          flex-direction: column !important;
-
-          gap: 8px !important;
-
-          margin: 0 !important;
-        }
-
-        #cc-main .cm__btn {
-          width: 100% !important;
+          border-radius:
+            10px !important;
         }
       }
     `;
@@ -416,10 +446,11 @@
 
 
   // =========================================================
-  // ACTUALIZAR CONSENT MODE
+  // ACTUALIZAR GOOGLE CONSENT MODE
   // =========================================================
 
   function updateGTM() {
+
     if (
       typeof window.AdsgoraCookieConsentUpdate !==
       'function'
@@ -440,7 +471,9 @@
       }
     });
 
-    window.AdsgoraCookieConsentUpdate(categories);
+    window.AdsgoraCookieConsentUpdate(
+      categories
+    );
   }
 
 
@@ -449,6 +482,7 @@
   // =========================================================
 
   function showPreferencesButton() {
+
     if (
       !cfg.preferencesTab ||
       !cfg.preferencesTab.enabled
@@ -457,7 +491,9 @@
     }
 
     if (
-      document.getElementById('adsgora-cc-settings')
+      document.getElementById(
+        'adsgora-cc-settings'
+      )
     ) {
       return;
     }
@@ -474,36 +510,60 @@
     button.textContent =
       cfg.preferencesTab.text || '🍪';
 
-    Object.assign(button.style, {
-      position: 'fixed',
-      bottom: '16px',
-      width: '44px',
-      height: '44px',
-      padding: '0',
-      border: '1px solid rgba(0,0,0,.12)',
-      borderRadius: '50%',
-      background: '#fff',
-      color: '#222',
-      cursor: 'pointer',
-      zIndex: '2147483646',
-      boxShadow: '0 3px 12px rgba(0,0,0,.18)',
-      fontSize: '20px',
-      lineHeight: '42px',
-      textAlign: 'center'
-    });
+    Object.assign(
+      button.style,
+      {
+        position: 'fixed',
+
+        bottom: '16px',
+
+        width: '44px',
+
+        height: '44px',
+
+        padding: '0',
+
+        border:
+          '1px solid rgba(0,0,0,.12)',
+
+        borderRadius: '50%',
+
+        background: '#fff',
+
+        color: '#222',
+
+        cursor: 'pointer',
+
+        zIndex: '2147483646',
+
+        boxShadow:
+          '0 3px 12px rgba(0,0,0,.18)',
+
+        fontSize: '20px',
+
+        lineHeight: '42px',
+
+        textAlign: 'center'
+      }
+    );
 
     const position =
-      cfg.preferencesTab.position === 'bottom-left'
+      cfg.preferencesTab.position ===
+      'bottom-left'
         ? 'left'
         : 'right';
 
-    button.style[position] = '16px';
+    button.style[position] =
+      '16px';
 
-    button.onclick = function () {
-      CC.showPreferences();
-    };
+    button.onclick =
+      function () {
+        CC.showPreferences();
+      };
 
-    document.body.appendChild(button);
+    document.body.appendChild(
+      button
+    );
   }
 
 
@@ -536,6 +596,7 @@
   CC.run({
 
     cookie: {
+
       name:
         cfg.cookie.name,
 
@@ -546,30 +607,55 @@
             cookie &&
             cookie.acceptType === 'necessary'
           )
-            ? Number(cfg.cookie.rejectExpiration)
-            : Number(cfg.cookie.acceptExpiration);
+            ? Number(
+                cfg.cookie.rejectExpiration
+              )
+            : Number(
+                cfg.cookie.acceptExpiration
+              );
         }
     },
 
 
     revision:
-      Number(cfg.cookie.revision),
+      Number(
+        cfg.cookie.revision
+      ),
 
+
+    // =======================================================
+    // LAYOUT NATIVO ORESTBIDA
+    // =======================================================
 
     guiOptions: {
 
       consentModal: {
-        layout: 'bar',
-        position: 'bottom center',
-        equalWeightButtons: false
+
+        layout:
+          'bar',
+
+        position:
+          'bottom center',
+
+        equalWeightButtons:
+          false
       },
 
+
       preferencesModal: {
-        layout: 'box',
-        position: 'right'
+
+        layout:
+          'box',
+
+        position:
+          'right'
       }
     },
 
+
+    // =======================================================
+    // CATEGORÍAS
+    // =======================================================
 
     categories: {
 
@@ -585,6 +671,10 @@
       advertising: {}
     },
 
+
+    // =======================================================
+    // IDIOMA
+    // =======================================================
 
     language: {
 
@@ -696,18 +786,25 @@
     // EVENTOS
     // =======================================================
 
-    onFirstConsent: function () {
-      updateGTM();
-    },
+    onFirstConsent:
+      function () {
+        updateGTM();
+      },
 
-    onConsent: function () {
-      updateGTM();
-      showPreferencesButton();
-    },
 
-    onChange: function () {
-      updateGTM();
-    }
+    onConsent:
+      function () {
+
+        updateGTM();
+
+        showPreferencesButton();
+      },
+
+
+    onChange:
+      function () {
+        updateGTM();
+      }
   });
 
 
@@ -716,9 +813,12 @@
   // =========================================================
 
   window.AdsgoraCookieConsent = {
-    showPreferences: function () {
-      CC.showPreferences();
-    }
+
+    showPreferences:
+      function () {
+
+        CC.showPreferences();
+      }
   };
 
 })();
