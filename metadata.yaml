@@ -2,5 +2,5 @@ homepage: "https://adsgora.es/"
 documentation: "https://github.com/AngelCouto/adsgora-cookieconsent"
 
 versions:
-  - sha: a9ad00616bcdf7fab337c766209d200b66b3b7f5
+  - sha: 1776202c4bc45bca1722087c4616fada76946863
     changeNotes: "Initial release of Adsgora Cookie Consent 1.0.0."
