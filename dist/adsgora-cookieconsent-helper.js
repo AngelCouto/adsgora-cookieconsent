@@ -106,6 +106,7 @@
   const supportedLanguages = ['es', 'en', 'gl'];
 
   const getBrowserLanguage = function () {
+
     const browserLanguage =
       (navigator.language || navigator.userLanguage || '')
         .toLowerCase()
@@ -117,21 +118,28 @@
   };
 
 
-  const languageConfig = cfg.language || {};
+  const languageConfig =
+    cfg.language || {};
 
   let lang;
 
+
   if (languageConfig.mode === 'auto') {
+
     lang =
       getBrowserLanguage() ||
       languageConfig.fallback ||
       'es';
+
   } else {
+
     lang =
       languageConfig.mode ||
       languageConfig.fallback ||
       'es';
+
   }
+
 
   if (supportedLanguages.indexOf(lang) === -1) {
     lang = 'es';
@@ -142,8 +150,11 @@
   // TEXTOS
   // ==========================================================
 
-  const baseTexts = i18n[lang] || i18n.es;
-  const textConfig = cfg.texts || {};
+  const baseTexts =
+    i18n[lang] || i18n.es;
+
+  const textConfig =
+    cfg.texts || {};
 
   const customText =
     textConfig.mode === 'custom';
@@ -203,6 +214,7 @@
       'link[href="' + CSS + '"]'
     );
 
+
   if (!existingCSS) {
 
     const link =
@@ -212,6 +224,7 @@
     link.href = CSS;
 
     document.head.appendChild(link);
+
   }
 
 
@@ -221,6 +234,22 @@
 
   const design =
     cfg.design || {};
+
+
+  // Ancho escritorio configurable desde GTM.
+  // Protegemos también el valor por si llega vacío o incorrecto.
+
+  let bannerWidth =
+    Number(design.bannerWidth);
+
+  if (
+    !bannerWidth ||
+    bannerWidth < 30 ||
+    bannerWidth > 100
+  ) {
+    bannerWidth = 60;
+  }
+
 
   const acceptColor =
     design.acceptButtonColor ||
@@ -238,31 +267,31 @@
   const style =
     document.createElement('style');
 
+
   style.id =
     'adsgora-cookieconsent-style';
+
 
   style.textContent = `
 
     /* ======================================================
-       MODAL
+       MODAL GENERAL
        ====================================================== */
 
     #cc-main .cm {
       box-sizing: border-box;
       border-radius: 12px;
       overflow: hidden;
+
       box-shadow:
         0 10px 35px rgba(0, 0, 0, 0.18);
     }
 
 
-    /* ======================================================
-       PREFERENCIAS
-       ====================================================== */
-
     #cc-main .pm {
       box-sizing: border-box;
       border-radius: 12px;
+
       box-shadow:
         0 10px 35px rgba(0, 0, 0, 0.18);
     }
@@ -284,10 +313,12 @@
 
     #cc-main .cm__btn {
       border-radius: 7px;
+
       transition:
         opacity 0.15s ease,
         transform 0.15s ease;
     }
+
 
     #cc-main .cm__btn:hover {
       opacity: 0.92;
@@ -314,13 +345,169 @@
 
     /* Configurar */
 
-    #cc-main
-    .cm__btns
-    > .cm__btn-group:last-child
-    .cm__btn {
+    #cc-main .cm__btn[data-role="show"] {
       background: ${settingsColor};
       border-color: ${settingsColor};
       color: #202124;
+    }
+
+
+    /* ======================================================
+       ESCRITORIO
+       ====================================================== */
+
+    @media (min-width: 1025px) {
+
+      /*
+       * Banner centrado.
+       * El ancho procede del campo bannerWidth de GTM.
+       */
+
+      #cc-main .cm {
+        width: ${bannerWidth}vw;
+        max-width: 1100px;
+
+        left: 50%;
+        right: auto;
+
+        bottom: 16px;
+
+        transform: translateX(-50%);
+      }
+
+
+      /*
+       * Evitamos que Cloud distribuya un grupo de botones
+       * en cada extremo del banner.
+       */
+
+      #cc-main .cm__btns {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+
+        width: 100%;
+        gap: 8px;
+      }
+
+
+      #cc-main .cm__btn-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        width: auto;
+        gap: 8px;
+      }
+
+
+      /*
+       * Orden solicitado:
+       *
+       * CONFIGURAR → RECHAZAR → ACEPTAR
+       *
+       * El DOM de Orestbida tiene:
+       *
+       * Grupo 1:
+       *   Aceptar
+       *   Rechazar
+       *
+       * Grupo 2:
+       *   Configurar
+       *
+       * Reordenamos únicamente mediante CSS.
+       */
+
+      #cc-main .cm__btns
+      > .cm__btn-group:last-child {
+        order: 1;
+      }
+
+
+      #cc-main .cm__btns
+      > .cm__btn-group:first-child {
+        order: 2;
+      }
+
+
+      #cc-main .cm__btn[data-role="necessary"] {
+        order: 1;
+      }
+
+
+      #cc-main .cm__btn[data-role="all"] {
+        order: 2;
+      }
+
+    }
+
+
+    /* ======================================================
+       TABLET
+       ====================================================== */
+
+    @media (min-width: 601px) and (max-width: 1024px) {
+
+      #cc-main .cm {
+        width: calc(100vw - 48px);
+        max-width: 850px;
+
+        left: 50%;
+        right: auto;
+
+        bottom: 16px;
+
+        transform: translateX(-50%);
+      }
+
+
+      #cc-main .cm__btns {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+
+        width: 100%;
+        gap: 8px;
+      }
+
+
+      #cc-main .cm__btn-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        width: auto;
+        gap: 8px;
+      }
+
+
+      /* Configurar */
+
+      #cc-main .cm__btns
+      > .cm__btn-group:last-child {
+        order: 1;
+      }
+
+
+      /* Rechazar + Aceptar */
+
+      #cc-main .cm__btns
+      > .cm__btn-group:first-child {
+        order: 2;
+      }
+
+
+      #cc-main .cm__btn[data-role="necessary"] {
+        order: 1;
+      }
+
+
+      #cc-main .cm__btn[data-role="all"] {
+        order: 2;
+      }
+
     }
 
 
@@ -330,7 +517,71 @@
 
     @media (max-width: 600px) {
 
-      #cc-main .cm,
+      /*
+       * 12px de margen a cada lado.
+       * 16px de margen inferior.
+       */
+
+      #cc-main .cm {
+        width: calc(100vw - 24px);
+        max-width: calc(100vw - 24px);
+
+        left: 12px;
+        right: 12px;
+
+        bottom: 16px;
+
+        transform: none;
+      }
+
+
+      /*
+       * Los tres botones ocupan todo el ancho y
+       * quedan apilados.
+       */
+
+      #cc-main .cm__btns {
+        display: flex;
+        flex-direction: column;
+
+        width: 100%;
+        gap: 8px;
+      }
+
+
+      #cc-main .cm__btn-group {
+        display: contents;
+      }
+
+
+      #cc-main .cm__btn {
+        width: 100%;
+      }
+
+
+      /*
+       * Orden:
+       *
+       * Configurar
+       * Rechazar
+       * Aceptar
+       */
+
+      #cc-main .cm__btn[data-role="show"] {
+        order: 1;
+      }
+
+
+      #cc-main .cm__btn[data-role="necessary"] {
+        order: 2;
+      }
+
+
+      #cc-main .cm__btn[data-role="all"] {
+        order: 3;
+      }
+
+
       #cc-main .pm {
         max-width: calc(100vw - 24px);
       }
@@ -345,9 +596,11 @@
       'adsgora-cookieconsent-style'
     );
 
+
   if (oldStyle) {
     oldStyle.remove();
   }
+
 
   document.head.appendChild(style);
 
@@ -356,44 +609,46 @@
   // GOOGLE CONSENT MODE
   // ==========================================================
 
-  const updateGTM = function () {
+  const updateGTM =
+    function () {
 
-    if (
-      typeof window.AdsgoraCookieConsentUpdate !==
-      'function'
-    ) {
-      return;
-    }
-
-
-    const categories = [];
+      if (
+        typeof window.AdsgoraCookieConsentUpdate !==
+        'function'
+      ) {
+        return;
+      }
 
 
-    if (
-      CC.acceptedCategory('functionality')
-    ) {
-      categories.push('functionality');
-    }
+      const categories = [];
 
 
-    if (
-      CC.acceptedCategory('analytics')
-    ) {
-      categories.push('analytics');
-    }
+      if (
+        CC.acceptedCategory('functionality')
+      ) {
+        categories.push('functionality');
+      }
 
 
-    if (
-      CC.acceptedCategory('advertising')
-    ) {
-      categories.push('advertising');
-    }
+      if (
+        CC.acceptedCategory('analytics')
+      ) {
+        categories.push('analytics');
+      }
 
 
-    window.AdsgoraCookieConsentUpdate(
-      categories
-    );
-  };
+      if (
+        CC.acceptedCategory('advertising')
+      ) {
+        categories.push('advertising');
+      }
+
+
+      window.AdsgoraCookieConsentUpdate(
+        categories
+      );
+
+    };
 
 
   // ==========================================================
@@ -517,6 +772,7 @@
       document.body.appendChild(
         button
       );
+
     };
 
 
@@ -612,21 +868,12 @@
 
 
     // ========================================================
-    // DISEÑO NATIVO ORESTBIDA
+    // LAYOUT
     // ========================================================
 
     guiOptions: {
 
       consentModal: {
-
-        /*
-         * IMPORTANTE:
-         *
-         * No utilizar "bar".
-         *
-         * Cloud inline permite que Orestbida gestione
-         * nativamente ancho, grupos de botones y responsive.
-         */
 
         layout:
           'cloud inline',
