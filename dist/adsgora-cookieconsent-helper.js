@@ -207,16 +207,6 @@
 
   const design = cfg.design || {};
 
-  let bannerWidth = Number(design.bannerWidth);
-
-  if (
-    !bannerWidth ||
-    bannerWidth < 30 ||
-    bannerWidth > 100
-  ) {
-    bannerWidth = 60;
-  }
-
   const acceptColor =
     design.acceptButtonColor || '#2563EB';
 
@@ -230,13 +220,13 @@
   // =========================================================
   // CSS ADSGORA
   //
-  // IMPORTANTE:
-  //
   // No modificamos:
-  //   .cm__btns
-  //   .cm__btn-group
+  // - ancho de .cm
+  // - posición de .cm
+  // - .cm__btns
+  // - .cm__btn-group
   //
-  // Orestbida controla completamente el layout de botones.
+  // El layout es responsabilidad de Orestbida.
   // =========================================================
 
   if (!document.getElementById('adsgora-cc-style')) {
@@ -246,90 +236,38 @@
 
     style.textContent = `
 
-      /* =====================================================
-         MODAL DE CONSENTIMIENTO
-         ===================================================== */
+      /* MODAL */
 
       #cc-main .cm {
-
         box-sizing: border-box !important;
 
-        border-radius: 12px !important;
+        border-radius:
+          12px !important;
 
         box-shadow:
-          0 8px 30px rgba(0, 0, 0, .16) !important;
+          0 8px 30px
+          rgba(0, 0, 0, .16) !important;
       }
 
 
-      /*
-       * ESCRITORIO
-       *
-       * El layout y posición son nativos de Orestbida.
-       * Nosotros solo definimos el ancho máximo.
-       */
+      /* PREFERENCIAS */
 
-      @media (min-width: 901px) {
+      #cc-main .pm {
+        box-sizing: border-box !important;
 
-        #cc-main .cm {
+        border-radius:
+          12px !important;
 
-          width:
-            ${bannerWidth}vw !important;
-
-          max-width:
-            1100px !important;
-        }
+        box-shadow:
+          0 8px 30px
+          rgba(0, 0, 0, .16) !important;
       }
 
 
-      /*
-       * TABLET
-       */
-
-      @media
-      (min-width: 601px)
-      and
-      (max-width: 900px) {
-
-        #cc-main .cm {
-
-          width:
-            calc(100vw - 40px) !important;
-
-          max-width:
-            850px !important;
-        }
-      }
-
-
-      /*
-       * MÓVIL
-       *
-       * Dejamos 16px de margen mínimo.
-       */
-
-      @media (max-width: 600px) {
-
-        #cc-main .cm {
-
-          width:
-            calc(100vw - 32px) !important;
-
-          max-width:
-            calc(100vw - 32px) !important;
-
-          border-radius:
-            10px !important;
-        }
-      }
-
-
-      /* =====================================================
-         ENLACES
-         ===================================================== */
+      /* ENLACES */
 
       #cc-main .cm__desc a,
       #cc-main .pm__section-desc a {
-
         text-decoration:
           underline;
 
@@ -341,15 +279,9 @@
       }
 
 
-      /* =====================================================
-         BOTONES
-         
-         SOLO APARIENCIA.
-         NO SE MODIFICA SU DISTRIBUCIÓN.
-         ===================================================== */
+      /* BOTONES */
 
       #cc-main .cm__btn {
-
         border-radius:
           7px !important;
 
@@ -368,7 +300,6 @@
 
       #cc-main
       .cm__btn[data-role="all"] {
-
         background:
           ${acceptColor} !important;
 
@@ -381,7 +312,6 @@
 
       #cc-main
       .cm__btn[data-role="necessary"] {
-
         background:
           ${rejectColor} !important;
 
@@ -391,21 +321,41 @@
 
 
       /* CONFIGURAR
-         
-         Solo cambiamos el color.
-         No modificamos su posición.
-      */
+       *
+       * Únicamente cambiamos el color.
+       * No alteramos el layout.
+       */
 
       #cc-main
       .cm__btns
       > .cm__btn-group:last-child
       .cm__btn {
-
         background:
           ${settingsColor} !important;
 
         color:
           #222 !important;
+      }
+
+
+      /* MÓVIL
+       *
+       * Tampoco modificamos el layout.
+       * Solo evitamos que el modal toque
+       * literalmente los bordes del viewport.
+       */
+
+      @media (max-width: 600px) {
+
+        #cc-main .cm {
+          max-width:
+            calc(100vw - 24px) !important;
+        }
+
+        #cc-main .pm {
+          max-width:
+            calc(100vw - 24px) !important;
+        }
       }
 
     `;
@@ -419,7 +369,6 @@
   // =========================================================
 
   function updateGTM() {
-
     if (
       typeof window.AdsgoraCookieConsentUpdate !==
       'function'
@@ -434,7 +383,6 @@
       'analytics',
       'advertising'
     ].forEach(function (category) {
-
       if (CC.acceptedCategory(category)) {
         categories.push(category);
       }
@@ -451,7 +399,6 @@
   // =========================================================
 
   function showPreferencesButton() {
-
     if (
       !cfg.preferencesTab ||
       !cfg.preferencesTab.enabled
@@ -535,7 +482,6 @@
 
     button.onclick =
       function () {
-
         CC.showPreferences();
       };
 
@@ -574,13 +520,11 @@
   CC.run({
 
     cookie: {
-
       name:
         cfg.cookie.name,
 
       expiresAfterDays:
         function (cookie) {
-
           return (
             cookie &&
             cookie.acceptType === 'necessary'
@@ -602,24 +546,20 @@
 
 
     // =======================================================
-    // LAYOUT NATIVO ORESTBIDA
+    // LAYOUT NATIVO
     //
-    // CAMBIO IMPORTANTE:
-    //
-    // Antes:
-    // layout: 'bar'
-    //
-    // Ahora:
-    // layout: 'box wide'
-    //
+    // Orestbida controla:
+    // - ancho
+    // - posición
+    // - distribución de botones
+    // - responsive
     // =======================================================
 
     guiOptions: {
 
       consentModal: {
-
         layout:
-          'box wide',
+          'cloud inline',
 
         position:
           'bottom center',
@@ -633,7 +573,6 @@
 
 
       preferencesModal: {
-
         layout:
           'box',
 
@@ -784,7 +723,6 @@
 
     onConsent:
       function () {
-
         updateGTM();
 
         showPreferencesButton();
@@ -806,7 +744,6 @@
 
     showPreferences:
       function () {
-
         CC.showPreferences();
       }
   };
