@@ -32,6 +32,7 @@
       preferencesDescription:
         'Puedes elegir qué categorías de cookies permites.',
       save: 'Guardar preferencias',
+      close: 'Cerrar',
       necessary: 'Necesarias',
       necessaryDesc:
         'Necesarias para el funcionamiento básico del sitio web. No pueden desactivarse.',
@@ -57,6 +58,7 @@
       preferencesDescription:
         'You can choose which cookie categories you allow.',
       save: 'Save preferences',
+      close: 'Close',
       necessary: 'Necessary',
       necessaryDesc:
         'Required for the basic operation of the website. They cannot be disabled.',
@@ -82,6 +84,7 @@
       preferencesDescription:
         'Podes elixir que categorías de cookies permites.',
       save: 'Gardar preferencias',
+      close: 'Pechar',
       necessary: 'Necesarias',
       necessaryDesc:
         'Necesarias para o funcionamento básico do sitio web. Non se poden desactivar.',
@@ -206,16 +209,14 @@
 
 
   // ==========================================================
-  // CARGAR CSS DE ORESTBIDA
+  // CARGAR CSS ORESTBIDA
   // ==========================================================
 
-  const existingCSS =
-    document.querySelector(
+  if (
+    !document.querySelector(
       'link[href="' + CSS + '"]'
-    );
-
-
-  if (!existingCSS) {
+    )
+  ) {
 
     const link =
       document.createElement('link');
@@ -224,7 +225,6 @@
     link.href = CSS;
 
     document.head.appendChild(link);
-
   }
 
 
@@ -236,11 +236,15 @@
     cfg.design || {};
 
 
-  // Ancho escritorio configurable desde GTM.
-  // Protegemos también el valor por si llega vacío o incorrecto.
+  /*
+   * Conservamos el campo de GTM:
+   *
+   * bannerWidth = porcentaje de ancho en escritorio.
+   */
 
   let bannerWidth =
     Number(design.bannerWidth);
+
 
   if (
     !bannerWidth ||
@@ -264,332 +268,9 @@
     '#E9EEF2';
 
 
-  const style =
-    document.createElement('style');
-
-
-  style.id =
-    'adsgora-cookieconsent-style';
-
-
-  style.textContent = `
-
-    /* ======================================================
-       MODAL GENERAL
-       ====================================================== */
-
-    #cc-main .cm {
-      box-sizing: border-box;
-      border-radius: 12px;
-      overflow: hidden;
-
-      box-shadow:
-        0 10px 35px rgba(0, 0, 0, 0.18);
-    }
-
-
-    #cc-main .pm {
-      box-sizing: border-box;
-      border-radius: 12px;
-
-      box-shadow:
-        0 10px 35px rgba(0, 0, 0, 0.18);
-    }
-
-
-    /* ======================================================
-       ENLACES
-       ====================================================== */
-
-    #cc-main .cm__desc a,
-    #cc-main .pm a {
-      text-decoration: underline;
-    }
-
-
-    /* ======================================================
-       BOTONES
-       ====================================================== */
-
-    #cc-main .cm__btn {
-      border-radius: 7px;
-
-      transition:
-        opacity 0.15s ease,
-        transform 0.15s ease;
-    }
-
-
-    #cc-main .cm__btn:hover {
-      opacity: 0.92;
-    }
-
-
-    /* Aceptar */
-
-    #cc-main .cm__btn[data-role="all"] {
-      background: ${acceptColor};
-      border-color: ${acceptColor};
-      color: #fff;
-    }
-
-
-    /* Rechazar */
-
-    #cc-main .cm__btn[data-role="necessary"] {
-      background: ${rejectColor};
-      border-color: ${rejectColor};
-      color: #fff;
-    }
-
-
-    /* Configurar */
-
-    #cc-main .cm__btn[data-role="show"] {
-      background: ${settingsColor};
-      border-color: ${settingsColor};
-      color: #202124;
-    }
-
-
-    /* ======================================================
-       ESCRITORIO
-       ====================================================== */
-
-    @media (min-width: 1025px) {
-
-      /*
-       * Banner centrado.
-       * El ancho procede del campo bannerWidth de GTM.
-       */
-
-      #cc-main .cm {
-        width: ${bannerWidth}vw;
-        max-width: 1100px;
-
-        left: 50%;
-        right: auto;
-
-        bottom: 16px;
-
-        transform: translateX(-50%);
-      }
-
-
-      /*
-       * Evitamos que Cloud distribuya un grupo de botones
-       * en cada extremo del banner.
-       */
-
-      #cc-main .cm__btns {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-
-        width: 100%;
-        gap: 8px;
-      }
-
-
-      #cc-main .cm__btn-group {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-
-        width: auto;
-        gap: 8px;
-      }
-
-
-      /*
-       * Orden solicitado:
-       *
-       * CONFIGURAR → RECHAZAR → ACEPTAR
-       *
-       * El DOM de Orestbida tiene:
-       *
-       * Grupo 1:
-       *   Aceptar
-       *   Rechazar
-       *
-       * Grupo 2:
-       *   Configurar
-       *
-       * Reordenamos únicamente mediante CSS.
-       */
-
-      #cc-main .cm__btns
-      > .cm__btn-group:last-child {
-        order: 1;
-      }
-
-
-      #cc-main .cm__btns
-      > .cm__btn-group:first-child {
-        order: 2;
-      }
-
-
-      #cc-main .cm__btn[data-role="necessary"] {
-        order: 1;
-      }
-
-
-      #cc-main .cm__btn[data-role="all"] {
-        order: 2;
-      }
-
-    }
-
-
-    /* ======================================================
-       TABLET
-       ====================================================== */
-
-    @media (min-width: 601px) and (max-width: 1024px) {
-
-      #cc-main .cm {
-        width: calc(100vw - 48px);
-        max-width: 850px;
-
-        left: 50%;
-        right: auto;
-
-        bottom: 16px;
-
-        transform: translateX(-50%);
-      }
-
-
-      #cc-main .cm__btns {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-
-        width: 100%;
-        gap: 8px;
-      }
-
-
-      #cc-main .cm__btn-group {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-
-        width: auto;
-        gap: 8px;
-      }
-
-
-      /* Configurar */
-
-      #cc-main .cm__btns
-      > .cm__btn-group:last-child {
-        order: 1;
-      }
-
-
-      /* Rechazar + Aceptar */
-
-      #cc-main .cm__btns
-      > .cm__btn-group:first-child {
-        order: 2;
-      }
-
-
-      #cc-main .cm__btn[data-role="necessary"] {
-        order: 1;
-      }
-
-
-      #cc-main .cm__btn[data-role="all"] {
-        order: 2;
-      }
-
-    }
-
-
-    /* ======================================================
-       MÓVIL
-       ====================================================== */
-
-    @media (max-width: 600px) {
-
-      /*
-       * 12px de margen a cada lado.
-       * 16px de margen inferior.
-       */
-
-      #cc-main .cm {
-        width: calc(100vw - 24px);
-        max-width: calc(100vw - 24px);
-
-        left: 12px;
-        right: 12px;
-
-        bottom: 16px;
-
-        transform: none;
-      }
-
-
-      /*
-       * Los tres botones ocupan todo el ancho y
-       * quedan apilados.
-       */
-
-      #cc-main .cm__btns {
-        display: flex;
-        flex-direction: column;
-
-        width: 100%;
-        gap: 8px;
-      }
-
-
-      #cc-main .cm__btn-group {
-        display: contents;
-      }
-
-
-      #cc-main .cm__btn {
-        width: 100%;
-      }
-
-
-      /*
-       * Orden:
-       *
-       * Configurar
-       * Rechazar
-       * Aceptar
-       */
-
-      #cc-main .cm__btn[data-role="show"] {
-        order: 1;
-      }
-
-
-      #cc-main .cm__btn[data-role="necessary"] {
-        order: 2;
-      }
-
-
-      #cc-main .cm__btn[data-role="all"] {
-        order: 3;
-      }
-
-
-      #cc-main .pm {
-        max-width: calc(100vw - 24px);
-      }
-
-    }
-
-  `;
-
+  // ==========================================================
+  // CSS PERSONALIZADO
+  // ==========================================================
 
   const oldStyle =
     document.getElementById(
@@ -602,7 +283,382 @@
   }
 
 
+  const style =
+    document.createElement('style');
+
+
+  style.id =
+    'adsgora-cookieconsent-style';
+
+
+  style.textContent = `
+
+    /*
+     * ========================================================
+     * VARIABLES VISUALES
+     * ========================================================
+     */
+
+    #cc-main {
+      --cc-btn-primary-bg: ${acceptColor};
+      --cc-btn-primary-color: #ffffff;
+
+      --cc-btn-secondary-bg: ${rejectColor};
+      --cc-btn-secondary-color: #ffffff;
+
+      --cc-modal-border-radius: 12px;
+      --cc-btn-border-radius: 7px;
+    }
+
+
+    /*
+     * ========================================================
+     * MODAL
+     * ========================================================
+     *
+     * No modificamos:
+     *
+     * left
+     * right
+     * transform
+     * position
+     *
+     * El posicionamiento sigue siendo responsabilidad
+     * de CookieConsent.
+     */
+
+    #cc-main .cm {
+      box-sizing: border-box;
+      border-radius: 12px;
+
+      box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.18);
+    }
+
+
+    /*
+     * ========================================================
+     * ENLACES
+     * ========================================================
+     */
+
+    #cc-main .cm__desc a,
+    #cc-main .pm a {
+      text-decoration: underline;
+    }
+
+
+    /*
+     * ========================================================
+     * BOTONES
+     * ========================================================
+     */
+
+    #cc-main .cm__btn {
+      border-radius: 7px;
+      transition: opacity 0.15s ease;
+    }
+
+
+    #cc-main .cm__btn:hover {
+      opacity: 0.92;
+    }
+
+
+    #cc-main .cm__btn[data-role="all"] {
+      background: ${acceptColor};
+      border-color: ${acceptColor};
+      color: #ffffff;
+    }
+
+
+    #cc-main .cm__btn[data-role="necessary"] {
+      background: ${rejectColor};
+      border-color: ${rejectColor};
+      color: #ffffff;
+    }
+
+
+    #cc-main .cm__btn[data-role="show"] {
+      background: ${settingsColor};
+      border-color: ${settingsColor};
+      color: #202124;
+    }
+
+
+    /*
+     * ========================================================
+     * ESCRITORIO
+     * ========================================================
+     *
+     * bannerWidth continúa siendo un porcentaje.
+     *
+     * Ejemplo:
+     * bannerWidth = 60
+     * -> 60vw
+     *
+     * max-width evita tamaños excesivos.
+     */
+
+    @media (min-width: 1025px) {
+
+      #cc-main .cm {
+        width: ${bannerWidth}vw;
+        max-width: min(1100px, calc(100vw - 48px));
+
+        margin-bottom: 16px;
+      }
+
+
+      /*
+       * Después de normalizar los botones mediante JS,
+       * solo tenemos un grupo.
+       */
+
+      #cc-main .cm__btns {
+        width: 100%;
+      }
+
+
+      #cc-main .cm__btn-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+
+        width: 100%;
+        gap: 8px;
+      }
+
+
+      #cc-main .cm__btn {
+        width: auto;
+        min-width: 130px;
+      }
+
+    }
+
+
+    /*
+     * ========================================================
+     * TABLET
+     * ========================================================
+     */
+
+    @media (min-width: 601px) and (max-width: 1024px) {
+
+      #cc-main .cm {
+        width: calc(100vw - 48px);
+        max-width: 850px;
+
+        margin-bottom: 16px;
+      }
+
+
+      #cc-main .cm__btn-group {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+      }
+
+
+      #cc-main .cm__btn {
+        flex: 1 1 0;
+      }
+
+    }
+
+
+    /*
+     * ========================================================
+     * MÓVIL
+     * ========================================================
+     */
+
+    @media (max-width: 600px) {
+
+      #cc-main .cm {
+        width: calc(100vw - 24px);
+        max-width: calc(100vw - 24px);
+
+        margin-left: 12px;
+        margin-right: 12px;
+        margin-bottom: 16px;
+      }
+
+
+      #cc-main .cm__btn-group {
+        display: flex;
+        flex-direction: column;
+
+        width: 100%;
+        gap: 8px;
+      }
+
+
+      #cc-main .cm__btn {
+        width: 100%;
+      }
+
+
+      #cc-main .pm {
+        max-width: calc(100vw - 24px);
+      }
+
+    }
+
+  `;
+
+
   document.head.appendChild(style);
+
+
+  // ==========================================================
+  // NORMALIZAR BOTONES
+  // ==========================================================
+
+  /*
+   * Orestbida crea originalmente dos grupos:
+   *
+   * Grupo 1:
+   *   Aceptar
+   *   Rechazar
+   *
+   * Grupo 2:
+   *   Configurar
+   *
+   * Para nuestro diseño creamos un único grupo:
+   *
+   * Configurar
+   * Rechazar
+   * Aceptar
+   *
+   * No tocamos la posición del modal.
+   */
+
+  const normalizeButtons =
+    function () {
+
+      const container =
+        document.querySelector(
+          '#cc-main .cm__btns'
+        );
+
+
+      if (!container) {
+        return false;
+      }
+
+
+      const configure =
+        container.querySelector(
+          '[data-role="show"]'
+        );
+
+      const reject =
+        container.querySelector(
+          '[data-role="necessary"]'
+        );
+
+      const accept =
+        container.querySelector(
+          '[data-role="all"]'
+        );
+
+
+      if (
+        !configure ||
+        !reject ||
+        !accept
+      ) {
+        return false;
+      }
+
+
+      /*
+       * Evitar repetir la operación.
+       */
+
+      if (
+        container.getAttribute(
+          'data-adsgora-normalized'
+        ) === 'true'
+      ) {
+        return true;
+      }
+
+
+      const group =
+        document.createElement('div');
+
+
+      group.className =
+        'cm__btn-group adsgora-btn-group';
+
+
+      group.appendChild(configure);
+      group.appendChild(reject);
+      group.appendChild(accept);
+
+
+      while (container.firstChild) {
+        container.removeChild(
+          container.firstChild
+        );
+      }
+
+
+      container.appendChild(group);
+
+
+      container.setAttribute(
+        'data-adsgora-normalized',
+        'true'
+      );
+
+
+      return true;
+    };
+
+
+  /*
+   * El modal se genera dentro de CC.run().
+   * Probamos inmediatamente y, si todavía no existe,
+   * esperamos brevemente a que CookieConsent cree el DOM.
+   */
+
+  const prepareButtons =
+    function () {
+
+      if (normalizeButtons()) {
+        return;
+      }
+
+
+      let attempts = 0;
+
+
+      const timer =
+        setInterval(
+          function () {
+
+            attempts += 1;
+
+
+            if (
+              normalizeButtons() ||
+              attempts >= 20
+            ) {
+
+              clearInterval(timer);
+
+            }
+
+          },
+          50
+        );
+
+    };
 
 
   // ==========================================================
@@ -624,23 +680,35 @@
 
 
       if (
-        CC.acceptedCategory('functionality')
+        CC.acceptedCategory(
+          'functionality'
+        )
       ) {
-        categories.push('functionality');
+        categories.push(
+          'functionality'
+        );
       }
 
 
       if (
-        CC.acceptedCategory('analytics')
+        CC.acceptedCategory(
+          'analytics'
+        )
       ) {
-        categories.push('analytics');
+        categories.push(
+          'analytics'
+        );
       }
 
 
       if (
-        CC.acceptedCategory('advertising')
+        CC.acceptedCategory(
+          'advertising'
+        )
       ) {
-        categories.push('advertising');
+        categories.push(
+          'advertising'
+        );
       }
 
 
@@ -687,7 +755,7 @@
         'button';
 
 
-      button.innerHTML =
+      button.textContent =
         buttonConfig.text || '🍪';
 
 
@@ -875,8 +943,15 @@
 
       consentModal: {
 
+        /*
+         * Utilizamos BOX.
+         *
+         * Evitamos la estructura horizontal de cloud inline
+         * que estaba provocando el desbordamiento.
+         */
+
         layout:
-          'cloud inline',
+          'box',
 
         position:
           'bottom center',
@@ -980,7 +1055,7 @@
               texts.save,
 
             closeIconLabel:
-              'Cerrar',
+              baseTexts.close,
 
 
             sections: [
@@ -1092,6 +1167,13 @@
       }
 
   });
+
+
+  // ==========================================================
+  // PREPARAR BOTONES
+  // ==========================================================
+
+  prepareButtons();
 
 
   // ==========================================================
